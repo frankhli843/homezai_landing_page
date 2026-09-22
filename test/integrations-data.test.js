@@ -56,10 +56,18 @@ function allItems() {
 }
 
 /*
- * The exact organizations Brian Schoedel asked for on 2026-09-01 in the
- * "Homezai website Integrations" email. Ohio is one established integration
- * (the brand plus its formal description), Florida is the renamed
- * Bonita-Estero board, and Alabama is two separate organizations.
+ * The exact organizations Brian Schoedel asked for, in request order.
+ *
+ * The first four are from the 2026-09-01 "Homezai website Integrations"
+ * email: Ohio is one established integration (the brand plus its formal
+ * description), Florida is the renamed Bonita-Estero board, and Alabama is two
+ * separate organizations. San Diego is a SECOND request, made on 2026-09-22
+ * alongside the Innovate Realty onboarding, and is listed last because this
+ * array is also the rendered order.
+ *
+ * Every entry here is a claim about what somebody actually asked for. Adding a
+ * row because an integration exists, rather than because it was requested,
+ * would quietly turn this guard into a mirror of the data it is guarding.
  */
 const REQUIRED_MLS = [
   { name: 'CincyMLS', desc: 'MLS of Greater Cincinnati', logo: CINCYMLS_LOGO },
@@ -78,9 +86,14 @@ const REQUIRED_MLS = [
     desc: 'Mobile area, Alabama',
     logo: '/images/integrations/gulf-coast-mls-mobile-area-association-of-realtors.jpg',
   },
+  // Added 2026-09-22 on Brian's request for the Innovate Realty onboarding.
+  // `logo: null` is the assertion, not an omission: no SDMLS artwork has been
+  // supplied, and pinning the null is what stops a later change binding a logo
+  // nobody sent us.
+  { name: 'San Diego MLS (SDMLS)', desc: 'San Diego, California', logo: null },
 ]
 
-test('the MLS category lists exactly the four requested organizations, in order', () => {
+test('the MLS category lists exactly the requested organizations, in order', () => {
   assert.deepEqual(
     mlsItems().map((i) => i.name),
     REQUIRED_MLS.map((i) => i.name),

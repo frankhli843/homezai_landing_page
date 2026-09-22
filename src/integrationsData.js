@@ -40,6 +40,20 @@ export const integrationCategories = [
         logo: '/images/integrations/gulf-coast-mls-mobile-area-association-of-realtors.jpg',
         logoAlt: 'Gulf Coast MLS, Mobile Area Association of REALTORS logo',
       },
+      // Requested by Brian on 2026-09-22 for the Innovate Realty onboarding.
+      //
+      // NO LOGO ON PURPOSE. The rule at the top of this file is that artwork
+      // must be something the partner actually sent us, and no SDMLS artwork
+      // has reached an approved source. An honest text wordmark is the correct
+      // card until it does; borrowing a logo off the web would put a third
+      // party's mark on our marketing site with no licence to use it.
+      //
+      // The card says the organization and where it operates, and deliberately
+      // claims nothing about what may be DISPLAYED from the feed. Homezai has
+      // verified technical access to SDMLS; no consumer-facing display (IDX)
+      // authorization has been read for it, and the other cards on this page
+      // carry the same open question, so this page has never made that claim.
+      { name: 'San Diego MLS (SDMLS)', desc: 'San Diego, California' },
     ],
   },
   {
