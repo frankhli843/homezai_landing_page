@@ -15,11 +15,13 @@ import siteStyles from '../App.css?raw'
 import {
   PREVIEW_CHROME_CSS,
   MEDIA_PREFIX,
+  assetSource,
   buildPreviewHtml,
   collectFields,
   loadCachedThumbnail,
   makeElementFactory,
   resolveHeroSource,
+  waitForAssetSource,
 } from './previewTemplate.js'
 
 /** The private repository the editor reads, used only to find a cached thumbnail. */
@@ -44,6 +46,47 @@ export function registerArticlePreview(cms, { repo = CONTENT_REPO, styles = site
   // A hero saved into the private repository but never published has no public URL, so
   // its thumbnail is fetched from the editor's own cache once per path.
   const thumbnails = new Map()
+
+  // Images already saved in the repository that the editor was still fetching when the
+  // pane was drawn, keyed by the reference the article uses. Each one is waited for
+  // once and its address remembered, so the pane is corrected in place when the bytes
+  // arrive and every later draw uses them directly.
+  const fetched = new Map()
+  const swapHero = (props, url) => {
+    const doc = props.document
+    const hero = doc && doc.querySelector('.article-hero img')
+    if (hero) hero.src = url
+    const share = doc && doc.querySelector('.preview-share-card img')
+    if (share) share.src = url
+  }
+  const whenFetched = (reference, asset, apply) => {
+    if (fetched.has(reference)) return
+    fetched.set(reference, '')
+    waitForAssetSource(asset).then((url) => {
+      if (!url) return
+      fetched.set(reference, url)
+      apply(url)
+      // Again once the pane has certainly been drawn, for an answer that arrived first.
+      setTimeout(() => apply(url), 500)
+    })
+  }
+  const getAsset = (props, reference) => {
+    let decoded = reference
+    try {
+      decoded = decodeURIComponent(reference.replace(/&amp;/g, '&'))
+    } catch {
+      /* keep it as written */
+    }
+    for (const candidate of new Set([decoded, reference])) {
+      try {
+        const asset = props.getAsset(candidate)
+        if (asset) return asset
+      } catch {
+        /* try the next spelling */
+      }
+    }
+    return undefined
+  }
 
   cms.registerPreviewTemplate('posts', (props) => {
     const element = makeElementFactory(
@@ -72,19 +115,29 @@ export function registerArticlePreview(cms, { repo = CONTENT_REPO, styles = site
         thumbnails.set(mediaPath, url)
         // Swap it in where it already rendered, so the pane does not depend on the
         // editor choosing to re-run the template.
-        const doc = props.document
-        const hero = doc && doc.querySelector('.article-hero img')
-        if (hero) hero.src = url
-        const share = doc && doc.querySelector('.preview-share-card img')
-        if (share) share.src = url
+        swapHero(props, url)
       })
     }
 
-    const heroSrc = resolveHeroSource(asset, path, thumbnails.get(mediaPath) || '')
+    const heroSrc = resolveHeroSource(asset, path, fetched.get(path) || thumbnails.get(mediaPath) || '')
+    if (asset && path && !assetSource(asset)) {
+      whenFetched(path, asset, (url) => swapHero(props, url))
+    }
 
     let html
     try {
-      html = buildPreviewHtml({ ...fields, heroSrc })
+      html = buildPreviewHtml({ ...fields, heroSrc, bodyImageSources: fetched })
+      for (const [, reference] of html.matchAll(/data-media-ref="([^"]*)"/g)) {
+        if (fetched.get(reference)) continue
+        const bodyAsset = getAsset(props, reference)
+        if (!bodyAsset) continue
+        whenFetched(reference, bodyAsset, (url) => {
+          const doc = props.document
+          for (const img of doc ? doc.querySelectorAll('img[data-media-ref]') : []) {
+            if (img.getAttribute('data-media-ref') === reference.replace(/&amp;/g, '&')) img.src = url
+          }
+        })
+      }
     } catch (error) {
       console.warn('The article preview could not be built.', error)
       html =
