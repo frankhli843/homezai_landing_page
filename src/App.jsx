@@ -57,7 +57,6 @@ function Navbar() {
           <img src={`${BASE}${HOMEZAI_WORDMARK.replace(/^\//, '')}`} alt={HOMEZAI_WORDMARK_ALT} width={HOMEZAI_WORDMARK_WIDTH} height={HOMEZAI_WORDMARK_HEIGHT} className="logo-img" />
         </Link>
         <div className="nav-links">
-          <Link to="/blog/">Blog</Link>
           <Link to="/#features">Features</Link>
           <Link to="/#benefits">Benefits</Link>
           <Link to="/integrations">Integrations</Link>
