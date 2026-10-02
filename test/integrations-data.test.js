@@ -127,6 +127,120 @@ const SUPPLIED_LOGOS = [
     sha256: '3272c3f7e2be6642ca71da5fe4a90346afa801411ee901f67e8d5a1bdc0eb4be' },
 ]
 
+/*
+ * Brian's second 2026-10-02 request reshaped the rest of the page: roster
+ * feeds gained two cards and real logos, every card he listed for removal
+ * went, Google Calendar got its logo, and Facebook, Instagram and LinkedIn
+ * moved into a new Social Media category. Removing those cards left CRM,
+ * Leads and Design Apps with nothing in them, so those headings go too rather
+ * than rendering as empty "0 integrations available" sections.
+ */
+const CALENDARS_CATEGORY = 'Calendars'
+const ROSTER_CATEGORY = 'User Roster Feeds'
+const SOCIAL_CATEGORY = 'Social Media'
+
+const EXPECTED_CATEGORY_ORDER = [
+  MLS_CATEGORY,
+  MLS_SYSTEMS_CATEGORY,
+  CALENDARS_CATEGORY,
+  ROSTER_CATEGORY,
+  SOCIAL_CATEGORY,
+]
+
+const EXP_LOGO = '/images/integrations/exp-realty.png'
+const BHHS_LOGO = '/images/integrations/berkshire-hathaway-homeservices.png'
+const WEICHERT_LOGO = '/images/integrations/weichert-realtors.png'
+const BOLDTRAIL_LOGO = '/images/integrations/boldtrail.png'
+const GOOGLE_CALENDAR_LOGO = '/images/integrations/google-calendar.png'
+const FACEBOOK_LOGO = '/images/integrations/facebook.png'
+const INSTAGRAM_LOGO = '/images/integrations/instagram.png'
+const LINKEDIN_LOGO = '/images/integrations/linkedin.png'
+
+const ROSTER_DESC = 'Agent roster synchronization'
+
+// In the order Brian listed them.
+const REQUIRED_ROSTER_FEEDS = [
+  { name: 'eXp Realty (BoldTrail)', desc: ROSTER_DESC, logo: EXP_LOGO },
+  { name: 'Berkshire Hathaway HomeServices (BoldTrail)', desc: ROSTER_DESC, logo: BHHS_LOGO },
+  { name: 'Weichert Realtors (BoldTrail)', desc: ROSTER_DESC, logo: WEICHERT_LOGO },
+  { name: 'BoldTrail (Inside Real Estate)', desc: ROSTER_DESC, logo: BOLDTRAIL_LOGO },
+]
+
+const REQUIRED_CALENDARS = [
+  { name: 'Google Calendar', desc: 'Sync appointments with Google Calendar', logo: GOOGLE_CALENDAR_LOGO },
+]
+
+const SOCIAL_DESC = 'Embed your booking page into social posts'
+
+const REQUIRED_SOCIAL = [
+  { name: 'Facebook (Meta)', desc: SOCIAL_DESC, logo: FACEBOOK_LOGO },
+  { name: 'Instagram (Meta)', desc: SOCIAL_DESC, logo: INSTAGRAM_LOGO },
+  { name: 'LinkedIn (Microsoft)', desc: SOCIAL_DESC, logo: LINKEDIN_LOGO },
+]
+
+// Every card Brian asked to take off the page, by the name it was published
+// under. None of these may come back in any category.
+const REMOVED_CARDS = [
+  'BoldTrail by Inside Real Estate',
+  'Apple Calendar',
+  'Calendly',
+  'Microsoft Outlook Calendar',
+  'Homes.com',
+  'Homezai',
+  'LinkedIn',
+  'Meta (Facebook, Instagram)',
+  'Realtor.com',
+  'TikTok',
+  'Zillow',
+  'Canva',
+  'Maxa Designs',
+]
+
+const EMPTIED_CATEGORIES = [
+  'Customer Relationship Management (CRM)',
+  'Leads',
+  'Design Apps',
+]
+
+/* Supplied 200x100 PNGs, white margin trimmed to a 2px pad, metadata dropped. */
+const SUPPLIED_LOGOS_OCT_2 = [
+  { logo: EXP_LOGO, alt: /exp realty/i, width: 159, height: 84,
+    sha256: '3567596ae179c1f5f7eacd039bfbde40b3890f39fca536d46f8851fcb258467b' },
+  { logo: BHHS_LOGO, alt: /berkshire hathaway homeservices/i, width: 184, height: 81,
+    sha256: '100de742e0b098109190876967808c90d1fc7e6dca4b0c8a670a8ab2df54e805' },
+  { logo: WEICHERT_LOGO, alt: /weichert/i, width: 84, height: 84,
+    sha256: 'c0a35243c457ad562c15c69ea15322ed1a2f8052906f34bff221d3448fa96afa' },
+  { logo: BOLDTRAIL_LOGO, alt: /boldtrail/i, width: 111, height: 32,
+    sha256: '9cefe733d154aae33d286e7c4a5041e14375966d1051ef50edc90403c68c7f75' },
+  { logo: GOOGLE_CALENDAR_LOGO, alt: /google calendar/i, width: 84, height: 84,
+    sha256: 'f706e28b26abd0c1262c5c469d924b33d7bc9c4d8ff51f0679e2ed8d863125a6' },
+  { logo: FACEBOOK_LOGO, alt: /facebook/i, width: 84, height: 84,
+    sha256: '677f2810ccf65e4279322843bd545394a8e045eb2131835d38676271f1a07c34' },
+  { logo: INSTAGRAM_LOGO, alt: /instagram/i, width: 84, height: 84,
+    sha256: '1efce6c38cff0e262b63ab0a03c61ed0b1b1f0f51a096b4780ae1b60fced9def' },
+  { logo: LINKEDIN_LOGO, alt: /linkedin/i, width: 84, height: 84,
+    sha256: '1e63bc396f3ac53962be655705ac158a294cb026e28a32f36818ac06b9ca5efe' },
+]
+
+function categoryItems(name) {
+  const matches = integrationCategories.filter((c) => c.name === name)
+  assert.equal(matches.length, 1, `expected exactly one "${name}" category`)
+  return matches[0].items
+}
+
+function assertCards(category, expected) {
+  const items = categoryItems(category)
+  assert.deepEqual(
+    items.map((i) => i.name),
+    expected.map((i) => i.name),
+    `"${category}" cards`,
+  )
+  expected.forEach((want, i) => {
+    assert.equal(items[i].desc, want.desc, `wrong description for "${want.name}"`)
+    assert.equal(items[i].logo, want.logo, `wrong logo binding for "${want.name}"`)
+  })
+}
+
 function systemsItems() {
   const matches = integrationCategories.filter((c) => c.name === MLS_SYSTEMS_CATEGORY)
   assert.equal(matches.length, 1, `expected exactly one "${MLS_SYSTEMS_CATEGORY}" category`)
@@ -374,6 +488,121 @@ test('the built Integrations page renders the new category and cards', { skip: !
     assert.equal(card.desc, expected.desc)
     assert.match(card.head, new RegExp(`<img src="${expected.logo.replace(/\./g, '\\.')}" alt="[^"]+"`))
   })
+})
+
+test('the categories render in the requested order, each exactly once', () => {
+  assert.deepEqual(integrationCategories.map((c) => c.name), EXPECTED_CATEGORY_ORDER)
+})
+
+test('no category is left empty', () => {
+  for (const cat of integrationCategories) {
+    assert.ok(cat.items.length > 0, `"${cat.name}" has no cards and would render as an empty section`)
+  }
+})
+
+test('categories emptied by the removals are gone, not rendered empty', () => {
+  const names = new Set(integrationCategories.map((c) => c.name))
+  for (const gone of EMPTIED_CATEGORIES) {
+    assert.equal(names.has(gone), false, `"${gone}" should no longer be a category`)
+  }
+})
+
+test('User Roster Feeds lists the four requested BoldTrail feeds with logos, in order', () => {
+  assertCards(ROSTER_CATEGORY, REQUIRED_ROSTER_FEEDS)
+})
+
+test('Calendars keeps only Google Calendar, now with its logo', () => {
+  assertCards(CALENDARS_CATEGORY, REQUIRED_CALENDARS)
+})
+
+test('Social Media is the last category and holds exactly Facebook, Instagram and LinkedIn', () => {
+  assert.equal(integrationCategories.at(-1).name, SOCIAL_CATEGORY)
+  assertCards(SOCIAL_CATEGORY, REQUIRED_SOCIAL)
+})
+
+test('every card Brian asked to remove is absent from every category', () => {
+  const names = new Set(allItems().map((i) => i.name))
+  for (const removed of REMOVED_CARDS) {
+    assert.equal(names.has(removed), false, `"${removed}" was asked to be removed but is still listed`)
+  }
+})
+
+test('the social networks appear once, only in Social Media', () => {
+  for (const cat of integrationCategories) {
+    if (cat.name === SOCIAL_CATEGORY) continue
+    for (const item of cat.items) {
+      assert.doesNotMatch(
+        item.name,
+        /facebook|instagram|linkedin|\bmeta\b|tiktok/i,
+        `"${item.name}" in "${cat.name}" duplicates or contradicts the Social Media category`,
+      )
+    }
+  }
+})
+
+test('BoldTrail itself is listed once, as a roster feed', () => {
+  const standalone = allItems().filter((i) => /^boldtrail\b/i.test(i.name))
+  assert.deepEqual(standalone.map((i) => i.name), ['BoldTrail (Inside Real Estate)'])
+})
+
+test('every card on the page now carries a logo', () => {
+  for (const item of allItems()) {
+    assert.ok(item.logo, `"${item.name}" has no logo and would render as a wordmark`)
+  }
+})
+
+test('every logo supplied on 2026-10-02 for the category update is committed, pinned, and described', () => {
+  const byLogo = new Map(allItems().filter((i) => i.logo).map((i) => [i.logo, i]))
+  const bound = allItems().filter((i) => i.logo).map((i) => i.logo)
+  assert.equal(new Set(bound).size, bound.length, 'two cards share one logo file')
+  for (const expected of SUPPLIED_LOGOS_OCT_2) {
+    const item = byLogo.get(expected.logo)
+    assert.ok(item, `no card is bound to ${expected.logo}`)
+    assert.ok(item.logoAlt && item.logoAlt.trim().length > 0, `"${item.name}" needs alt text`)
+    assert.match(item.logoAlt, expected.alt, `unhelpful alt text for "${item.name}": ${item.logoAlt}`)
+
+    const onDisk = path.join(publicDir, expected.logo.replace(/^\//, ''))
+    assert.ok(existsSync(onDisk), `missing committed asset: ${onDisk}`)
+    assert.deepEqual(pngSize(onDisk), { width: expected.width, height: expected.height })
+    assert.equal(sha256(onDisk), expected.sha256, `${expected.logo} is not the committed supplied artwork`)
+  }
+})
+
+test('the built Integrations page matches the data: headings, counts, cards and logos', { skip: !existsSync(builtIntegrations) && 'no build in dist/' }, () => {
+  const html = decodeEntities(readFileSync(builtIntegrations, 'utf8')).replace(/<!-- -->/g, '')
+  const list = html.slice(html.indexOf('class="integrations-list"'), html.indexOf('class="integrations-cta"'))
+  assert.ok(list.length > 0, 'no integrations list in the built page')
+
+  const sections = list.split('<div class="integration-category">').slice(1)
+  assert.deepEqual(
+    sections.map((s) => s.match(/<h2>([^<]+)<\/h2>/)?.[1]),
+    EXPECTED_CATEGORY_ORDER,
+    'built category headings',
+  )
+
+  sections.forEach((section, i) => {
+    const cat = integrationCategories[i]
+    const cards = [...section.matchAll(
+      /<div class="integration-card">([\s\S]*?)<h3>([^<]+)<\/h3><p>([^<]+)<\/p>/g,
+    )].map((m) => ({ head: m[1], name: m[2], desc: m[3] }))
+    const count = section.match(/class="category-count">(\d+) integrations? available</)
+    assert.ok(count, `"${cat.name}" has no count label`)
+    assert.equal(Number(count[1]), cards.length, `"${cat.name}" count label disagrees with its rendered cards`)
+    assert.deepEqual(cards.map((c) => c.name), cat.items.map((it) => it.name), `"${cat.name}" rendered cards`)
+    cards.forEach((card, j) => {
+      const item = cat.items[j]
+      assert.equal(card.desc, item.desc)
+      const img = card.head.match(/<img src="([^"]+)" alt="([^"]*)"/)
+      assert.ok(img, `"${card.name}" renders no logo image`)
+      assert.equal(img[1], item.logo)
+      assert.equal(img[2], item.logoAlt)
+      assert.doesNotMatch(card.head, /integration-wordmark/, `"${card.name}" fell back to a wordmark`)
+    })
+  })
+
+  for (const removed of REMOVED_CARDS) {
+    assert.equal(list.includes(`<h3>${removed}</h3>`), false, `the built page still lists "${removed}"`)
+  }
 })
 
 test('every card has a non-empty name and description and no duplicate names', () => {
