@@ -31,6 +31,7 @@
  */
 
 import { renderMarkdown, readingTimeMinutes } from '../content/markdown.js'
+import { publishedNameForUpload } from '../content/media.js'
 
 /** Local media lives here once published. Anything else cannot be a hero image. */
 export const MEDIA_PREFIX = '/blog-media/'
@@ -89,15 +90,71 @@ function loadableSource(value) {
   return typeof value === 'string' && /^(blob:|data:|https?:|\/)/i.test(value) ? value : ''
 }
 
-function assetSource(asset) {
+/*
+ * An editor asset for an image already saved in the repository starts out with `url`
+ * set to its public PATH under the name it was uploaded as, and only becomes a blob URL
+ * once the editor has fetched the bytes. That path is not the picture: the publish step
+ * writes the image under its safe name, so /blog-media/<uploaded name> never exists on
+ * the site, and drawing it is a broken image until the publisher happens to type
+ * something that redraws the pane. It is treated as "not loaded yet" instead.
+ */
+function notYetLoaded(source) {
+  return source.startsWith(MEDIA_PREFIX) || source.startsWith(SITE_ORIGIN + MEDIA_PREFIX)
+}
+
+export function assetSource(asset) {
   if (!asset || typeof asset !== 'object') return ''
   const direct = loadableSource(asset.url)
-  if (direct) return direct
+  if (direct) return notYetLoaded(direct) ? '' : direct
   try {
-    return loadableSource(String(asset))
+    const text = loadableSource(String(asset))
+    return text && !notYetLoaded(text) ? text : ''
   } catch {
     return ''
   }
+}
+
+/**
+ * The address the publish step will serve a /blog-media/ reference from, or nothing.
+ *
+ * The publish step resolves a reference to the uploaded file and rewrites it to
+ * publishedNameForUpload's answer, so `/blog-media/Ninoska “Nina” Fabbri.webp` is live
+ * at /blog-media/ninoska-nina-fabbri.webp and nowhere else. The editor writes spaces as
+ * %20 inside a body, so the reference is decoded first. Anything that is not exactly
+ * one file name under the media prefix gets nothing rather than a guess.
+ */
+export function publishedMediaUrl(reference) {
+  if (typeof reference !== 'string' || !reference.startsWith(MEDIA_PREFIX)) return ''
+  let name
+  try {
+    name = decodeURIComponent(reference.slice(MEDIA_PREFIX.length).replace(/&amp;/g, '&'))
+  } catch {
+    return ''
+  }
+  if (!name.trim() || /[/\\]/.test(name)) return ''
+  return `${SITE_ORIGIN}${MEDIA_PREFIX}${publishedNameForUpload(name)}`
+}
+
+/**
+ * Resolve once the editor has the asset's bytes, with the address to draw them from.
+ *
+ * The preview template runs synchronously and the editor fetches a saved image
+ * asynchronously, so the first draw after opening or saving an article happens before
+ * the picture exists. This waits for it, and gives up with an empty string rather than
+ * polling forever when it never arrives.
+ */
+export function waitForAssetSource(asset, { timeoutMs = 20000, intervalMs = 250 } = {}) {
+  return new Promise((resolve) => {
+    if (!asset || typeof asset !== 'object') return resolve('')
+    const started = Date.now()
+    const check = () => {
+      const source = assetSource(asset)
+      if (source) return resolve(source)
+      if (Date.now() - started >= timeoutMs) return resolve('')
+      setTimeout(check, intervalMs)
+    }
+    check()
+  })
 }
 
 /**
@@ -105,9 +162,10 @@ function assetSource(asset) {
  *
  * The frame is a blob document, so a site relative path resolves against nothing. The
  * order below is the order of certainty: the file the publisher just chose, then the
- * thumbnail Sveltia cached for the repository copy, then the published URL, which only
- * exists once the article has been published at least once. When none of them resolve
- * the caller draws a labelled placeholder instead of a broken image.
+ * thumbnail Sveltia cached for the repository copy, then the published URL under its
+ * published name, which only exists once the article has been published at least once.
+ * When none of them resolve the caller draws a labelled placeholder instead of a broken
+ * image.
  */
 export function resolveHeroSource(asset, path, thumbnailUrl) {
   if (asset && asset.fileObj && typeof URL !== 'undefined' && URL.createObjectURL) {
@@ -126,7 +184,10 @@ export function resolveHeroSource(asset, path, thumbnailUrl) {
   const assetUrl = assetSource(asset)
   if (assetUrl) return assetUrl
   if (thumbnailUrl) return thumbnailUrl
-  if (typeof path === 'string' && path.startsWith(MEDIA_PREFIX)) return SITE_ORIGIN + path
+  // The published address comes last, under the name the publish step really writes.
+  // It used to be the uploaded name on the live site, which only exists when the file
+  // was uploaded with a name that was already lowercase and hyphenated.
+  if (typeof path === 'string' && path.startsWith(MEDIA_PREFIX)) return publishedMediaUrl(path)
   // The field value itself, when it is already something a browser can load.
   //
   // This is the branch the placeholder was really falling through. Wrapping the
@@ -188,6 +249,25 @@ export async function loadCachedThumbnail(repo, mediaPath) {
 }
 
 /**
+ * Give every /blog-media/ image in a rendered body an address the preview can load.
+ *
+ * The body is rendered by the published page's own renderer, which leaves an image as
+ * the site relative reference the editor wrote. In the preview that resolves to the
+ * uploaded name on the live site, which is the same broken picture the hero used to
+ * be. Each one is pointed at the editor's own copy when preview.js has it, otherwise
+ * at the published address, and keeps its reference in data-media-ref so preview.js
+ * can swap the editor copy in when it arrives.
+ */
+export function pointBodyImagesAtLoadableSources(html, sources) {
+  return html.replace(/<img src="(\/blog-media\/[^"]*)"/g, (whole, reference) => {
+    const known = sources && typeof sources.get === 'function' ? sources.get(reference) : ''
+    const source = known || publishedMediaUrl(reference)
+    if (!source) return whole
+    return `<img src="${escapeHtml(source)}" data-media-ref="${reference}"`
+  })
+}
+
+/**
  * The preview markup.
  *
  * Deliberately the same element and class structure as ArticlePage in src/Blog.jsx, so
@@ -206,6 +286,7 @@ export function buildPreviewHtml(fields) {
     publishedAt,
     updatedAt,
     heroSrc,
+    bodyImageSources,
     heroAlt,
     heroDecorative,
     featured,
@@ -218,7 +299,7 @@ export function buildPreviewHtml(fields) {
   const shareTitle = escapeHtml(seoTitle || title || 'Untitled article')
   const shareDescription = escapeHtml(seoDescription || excerpt || '')
   const isPublished = status === 'published'
-  const bodyHtml = renderMarkdown(body || '')
+  const bodyHtml = pointBodyImagesAtLoadableSources(renderMarkdown(body || ''), bodyImageSources)
   const minutes = readingTimeMinutes(body || '')
 
   const hero = heroSrc

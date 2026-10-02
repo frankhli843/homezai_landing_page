@@ -196,7 +196,9 @@ export function validatePost(post) {
 
   for (const field of ['publishedAt', 'updatedAt']) {
     if (post[field] != null && !ISO_INSTANT_PATTERN.test(String(post[field]))) {
-      fail(field, `${field} must be an ISO 8601 instant in UTC`)
+      // Quote what was found. "must be an ISO 8601 instant" alone sent the 2026-10-01
+      // failure looking at the publisher, when the value showed it was the editor.
+      fail(field, `${field} must be an ISO 8601 instant in UTC, such as 2026-10-01T22:55:00Z, and is ${JSON.stringify(String(post[field]))}`)
     }
   }
 

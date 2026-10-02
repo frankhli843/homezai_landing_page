@@ -135,3 +135,25 @@ export function mediaNameStem(sourceName) {
 export function safeMediaName(sourceName, type) {
   return `${mediaNameStem(sourceName)}${EXTENSION_FOR_TYPE[type] || '.jpg'}`
 }
+
+const TYPE_FOR_EXTENSION = Object.freeze({
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
+})
+
+/**
+ * The published file name for an upload, when only its name is known.
+ *
+ * The editor's preview has the name an article refers to and not the bytes, so it
+ * takes the type from the extension. The editor transcodes every upload to webp and
+ * names it to match, so for anything it wrote this is the same answer safeMediaName
+ * gives from the sniffed bytes, and the preview asks for the address the publish step
+ * really writes rather than the name the file was uploaded under.
+ */
+export function publishedNameForUpload(sourceName) {
+  const extension = (/\.[A-Za-z0-9]+$/.exec(String(sourceName || ''))?.[0] || '').toLowerCase()
+  return safeMediaName(sourceName, TYPE_FOR_EXTENSION[extension])
+}
