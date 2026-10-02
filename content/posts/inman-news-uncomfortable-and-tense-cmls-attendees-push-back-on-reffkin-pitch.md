@@ -37,7 +37,7 @@ author: >-
   Fabbri
 publishedAt: '2026-10-01T22:55:00Z'
 updatedAt: '2026-10-01T22:55:00Z'
-heroImage: /blog-media/ninoska-nina-fabbri-founder-ceo-of-homezai-com-mentioned-in-inman-news-october-01-2026.webp
+heroImage: /blog-media/whatsapp-image-2026-10-01-at-18-51-15.webp
 heroImageAlt: >-
   Ninoska
   "Nina"
@@ -92,4 +92,4 @@ Author: [Jessi Healy](https://www.inman.com/author/jhealey/)
 
 Publish Date: October 01, 2026
 
-![Quote from Ninoska Nina Fabbri Founder and CEO of Homezai.com](/blog-media/ninoska-nina-fabbri-founder-and-ceo-of-homezai-com.webp)
+![Quote from Ninoska Nina Fabbri Founder and CEO of Homezai.com](/blog-media/whatsapp-image-2026-10-01-at-18-20-13.webp)
