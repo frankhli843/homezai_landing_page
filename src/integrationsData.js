@@ -85,45 +85,74 @@ export const integrationCategories = [
       },
     ],
   },
-  {
-    name: 'Customer Relationship Management (CRM)',
-    items: [
-      { name: 'BoldTrail by Inside Real Estate', desc: 'Complete real estate CRM platform' },
-    ],
-  },
+  // Brian's second 2026-10-02 request removed BoldTrail from CRM (it is now
+  // listed once, as a roster feed), every Leads and Design Apps card, and
+  // every calendar except Google. CRM, Leads and Design Apps were left with
+  // no cards, so those categories are gone rather than rendered empty.
   {
     name: 'Calendars',
     items: [
-      { name: 'Apple Calendar', desc: 'Seamless scheduling with Apple Calendar' },
-      { name: 'Calendly', desc: 'Automated scheduling and booking' },
-      { name: 'Google Calendar', desc: 'Sync appointments with Google Calendar' },
-      { name: 'Microsoft Outlook Calendar', desc: 'Integrate with Outlook scheduling' },
-    ],
-  },
-  {
-    name: 'Leads',
-    items: [
-      { name: 'Homes.com', desc: 'Lead generation platform' },
-      { name: 'Homezai', desc: 'Internal lead management' },
-      { name: 'LinkedIn', desc: 'Professional networking leads' },
-      { name: 'Meta (Facebook, Instagram)', desc: 'Social media advertising' },
-      { name: 'Realtor.com', desc: 'Premier real estate marketplace' },
-      { name: 'TikTok', desc: 'Short-form video marketing' },
-      { name: 'Zillow', desc: 'Leading real estate marketplace' },
-    ],
-  },
-  {
-    name: 'Design Apps',
-    items: [
-      { name: 'Canva', desc: 'Professional design and marketing materials' },
-      { name: 'Maxa Designs', desc: 'Real estate marketing and design solutions' },
+      {
+        name: 'Google Calendar',
+        desc: 'Sync appointments with Google Calendar',
+        logo: '/images/integrations/google-calendar.png',
+        logoAlt: 'Google Calendar logo',
+      },
     ],
   },
   {
     name: 'User Roster Feeds',
     items: [
-      { name: 'Berkshire Hathaway HomeServices (BoldTrail)', desc: 'Agent roster synchronization' },
-      { name: 'Weichert Realtors (BoldTrail)', desc: 'Agent roster synchronization' },
+      {
+        name: 'eXp Realty (BoldTrail)',
+        desc: 'Agent roster synchronization',
+        logo: '/images/integrations/exp-realty.png',
+        logoAlt: 'eXp Realty logo',
+      },
+      {
+        name: 'Berkshire Hathaway HomeServices (BoldTrail)',
+        desc: 'Agent roster synchronization',
+        logo: '/images/integrations/berkshire-hathaway-homeservices.png',
+        logoAlt: 'Berkshire Hathaway HomeServices logo',
+      },
+      {
+        name: 'Weichert Realtors (BoldTrail)',
+        desc: 'Agent roster synchronization',
+        logo: '/images/integrations/weichert-realtors.png',
+        logoAlt: 'Weichert Realtors logo',
+      },
+      {
+        name: 'BoldTrail (Inside Real Estate)',
+        desc: 'Agent roster synchronization',
+        logo: '/images/integrations/boldtrail.png',
+        logoAlt: 'BoldTrail logo',
+      },
+    ],
+  },
+  // Facebook, Instagram and LinkedIn used to be Leads cards; they now live
+  // here only, described as the booking-page embed Brian asked the page to
+  // show.
+  {
+    name: 'Social Media',
+    items: [
+      {
+        name: 'Facebook (Meta)',
+        desc: 'Embed your booking page into social posts',
+        logo: '/images/integrations/facebook.png',
+        logoAlt: 'Facebook logo',
+      },
+      {
+        name: 'Instagram (Meta)',
+        desc: 'Embed your booking page into social posts',
+        logo: '/images/integrations/instagram.png',
+        logoAlt: 'Instagram logo',
+      },
+      {
+        name: 'LinkedIn (Microsoft)',
+        desc: 'Embed your booking page into social posts',
+        logo: '/images/integrations/linkedin.png',
+        logoAlt: 'LinkedIn logo',
+      },
     ],
   },
 ]
