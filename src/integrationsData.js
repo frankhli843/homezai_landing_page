@@ -121,6 +121,15 @@ export const integrationCategories = [
         logo: '/images/integrations/weichert-realtors.png',
         logoAlt: 'Weichert Realtors logo',
       },
+      // Requested by Brian on 2026-10-05. RE/MAX brokerages reach BoldTrail
+      // through MAX/CENTER, so the line names it. It sits with the other
+      // brokerages, ahead of the BoldTrail platform card.
+      {
+        name: 'RE/MAX (BoldTrail)',
+        desc: 'MAX/CENTER Agent roster synchronization',
+        logo: '/images/integrations/remax.png',
+        logoAlt: 'RE/MAX logo',
+      },
       {
         name: 'BoldTrail (Inside Real Estate)',
         desc: 'Agent roster synchronization',

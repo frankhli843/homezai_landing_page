@@ -151,6 +151,7 @@ const EXP_LOGO = '/images/integrations/exp-realty.png'
 const BHHS_LOGO = '/images/integrations/berkshire-hathaway-homeservices.png'
 const WEICHERT_LOGO = '/images/integrations/weichert-realtors.png'
 const BOLDTRAIL_LOGO = '/images/integrations/boldtrail.png'
+const REMAX_LOGO = '/images/integrations/remax.png'
 const GOOGLE_CALENDAR_LOGO = '/images/integrations/google-calendar.png'
 const FACEBOOK_LOGO = '/images/integrations/facebook.png'
 const INSTAGRAM_LOGO = '/images/integrations/instagram.png'
@@ -158,11 +159,13 @@ const LINKEDIN_LOGO = '/images/integrations/linkedin.png'
 
 const ROSTER_DESC = 'Agent roster synchronization'
 
-// In the order Brian listed them.
+// In the order Brian listed them. RE/MAX came on 2026-10-05 and joins the
+// brokerages, ahead of the BoldTrail platform card.
 const REQUIRED_ROSTER_FEEDS = [
   { name: 'eXp Realty (BoldTrail)', desc: ROSTER_DESC, logo: EXP_LOGO },
   { name: 'Berkshire Hathaway HomeServices (BoldTrail)', desc: ROSTER_DESC, logo: BHHS_LOGO },
   { name: 'Weichert Realtors (BoldTrail)', desc: ROSTER_DESC, logo: WEICHERT_LOGO },
+  { name: 'RE/MAX (BoldTrail)', desc: 'MAX/CENTER Agent roster synchronization', logo: REMAX_LOGO },
   { name: 'BoldTrail (Inside Real Estate)', desc: ROSTER_DESC, logo: BOLDTRAIL_LOGO },
 ]
 
@@ -220,6 +223,17 @@ const SUPPLIED_LOGOS_OCT_2 = [
     sha256: '1efce6c38cff0e262b63ab0a03c61ed0b1b1f0f51a096b4780ae1b60fced9def' },
   { logo: LINKEDIN_LOGO, alt: /linkedin/i, width: 84, height: 84,
     sha256: '1e63bc396f3ac53962be655705ac158a294cb026e28a32f36818ac06b9ca5efe' },
+]
+
+/*
+ * Brian's 2026-10-05 RE/MAX artwork, a 200x100 PNG (sha256 6260aba3...eaef4).
+ * Same trim as above, except that a band of 253-254 pixels under the wordmark,
+ * invisible on white, is treated as margin too. Cut at exact white it would
+ * leave the mark in the top half of a 146x59 file, small and high in the frame.
+ */
+const SUPPLIED_LOGOS_OCT_5 = [
+  { logo: REMAX_LOGO, alt: /re\/max/i, width: 145, height: 32,
+    sha256: '85dd7b8b0caf4b5e0bcb0391de2a0c870da59b4696449e14d0fdbfeee75c3771' },
 ]
 
 function categoryItems(name) {
@@ -507,7 +521,7 @@ test('categories emptied by the removals are gone, not rendered empty', () => {
   }
 })
 
-test('User Roster Feeds lists the four requested BoldTrail feeds with logos, in order', () => {
+test('User Roster Feeds lists the five requested BoldTrail feeds with logos, in order', () => {
   assertCards(ROSTER_CATEGORY, REQUIRED_ROSTER_FEEDS)
 })
 
@@ -551,11 +565,11 @@ test('every card on the page now carries a logo', () => {
   }
 })
 
-test('every logo supplied on 2026-10-02 for the category update is committed, pinned, and described', () => {
+test('every logo supplied on 2026-10-02 and 2026-10-05 is committed, pinned, and described', () => {
   const byLogo = new Map(allItems().filter((i) => i.logo).map((i) => [i.logo, i]))
   const bound = allItems().filter((i) => i.logo).map((i) => i.logo)
   assert.equal(new Set(bound).size, bound.length, 'two cards share one logo file')
-  for (const expected of SUPPLIED_LOGOS_OCT_2) {
+  for (const expected of [...SUPPLIED_LOGOS_OCT_2, ...SUPPLIED_LOGOS_OCT_5]) {
     const item = byLogo.get(expected.logo)
     assert.ok(item, `no card is bound to ${expected.logo}`)
     assert.ok(item.logoAlt && item.logoAlt.trim().length > 0, `"${item.name}" needs alt text`)
@@ -603,6 +617,10 @@ test('the built Integrations page matches the data: headings, counts, cards and 
   for (const removed of REMOVED_CARDS) {
     assert.equal(list.includes(`<h3>${removed}</h3>`), false, `the built page still lists "${removed}"`)
   }
+
+  const roster = sections[EXPECTED_CATEGORY_ORDER.indexOf(ROSTER_CATEGORY)]
+  assert.match(roster, /class="category-count">5 integrations available</, 'User Roster Feeds count label')
+  assert.match(roster, /<h3>RE\/MAX \(BoldTrail\)<\/h3><p>MAX\/CENTER Agent roster synchronization<\/p>/)
 })
 
 test('every card has a non-empty name and description and no duplicate names', () => {
