@@ -10,8 +10,11 @@ import { integrationCategories } from '../src/integrationsData.js'
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = path.join(repoRoot, 'public')
 const distDir = path.join(repoRoot, 'dist')
+const appCssFile = path.join(repoRoot, 'src', 'App.css')
 
 const CINCYMLS_LOGO = '/images/integrations/cincymls.png'
+const HAR_LOGO = '/images/integrations/houston-association-of-realtors.png'
+const COCONUT_COAST_LOGO = '/images/integrations/coconut-coast-organization-of-realtors.png'
 const SDMLS_LOGO = '/images/integrations/san-diego-mls.png'
 const BRIDGE_LOGO = '/images/integrations/bridge-interactive.png'
 const REALTYFEED_LOGO = '/images/integrations/realtyfeed.png'
@@ -29,6 +32,11 @@ const CINCYMLS_LOGO_SHA256 =
  * IHDR chunk. The card frame relies on 595:336 being wider than it is tall. */
 const CINCYMLS_LOGO_WIDTH = 595
 const CINCYMLS_LOGO_HEIGHT = 336
+
+const HAR_LOGO_SHA256 =
+  '536755d20d627246698708b597f6a91a7a55da6f44538334ba1d53ab86f0295e'
+const COCONUT_COAST_LOGO_SHA256 =
+  'c4e3628345142d32e1c8044da6f287a5758f9150fa731d9e29aed87bdddd639e'
 
 function sha256(file) {
   return createHash('sha256').update(readFileSync(file)).digest('hex')
@@ -60,25 +68,27 @@ function allItems() {
 }
 
 /*
- * The exact organizations Brian Schoedel asked for, in request order.
+ * The exact organizations Brian Schoedel asked for, in rendered order.
  *
- * The first four are from the 2026-09-01 "Homezai website Integrations"
- * email: Ohio is one established integration (the brand plus its formal
- * description), Florida is the renamed Bonita-Estero board, and Alabama is two
- * separate organizations. San Diego is a SECOND request, made on 2026-09-22
- * alongside the Innovate Realty onboarding, and is listed last because this
- * array is also the rendered order.
+ * The September requests established Cincinnati, Florida, Alabama and San
+ * Diego. The 2026-10-08 request keeps Cincinnati first, adds HAR beside it, and
+ * updates Coconut Coast's public location and current logo treatment.
  *
  * Every entry here is a claim about what somebody actually asked for. Adding a
  * row because an integration exists, rather than because it was requested,
  * would quietly turn this guard into a mirror of the data it is guarding.
  */
 const REQUIRED_MLS = [
-  { name: 'CincyMLS', desc: 'MLS of Greater Cincinnati', logo: CINCYMLS_LOGO },
+  { name: 'MLS of Greater Cincinnati (CincyMLS)', desc: 'Cincinnati, Ohio', logo: CINCYMLS_LOGO },
+  {
+    name: 'Houston Association of REALTORS® (HAR)',
+    desc: 'Houston, Texas',
+    logo: HAR_LOGO,
+  },
   {
     name: 'Coconut Coast Organization of REALTORS®',
-    desc: 'Formerly Bonita-Estero REALTORS®',
-    logo: '/images/integrations/coconut-coast-organization-of-realtors.png',
+    desc: 'Bonita Springs, Florida',
+    logo: COCONUT_COAST_LOGO,
   },
   {
     name: 'Baldwin County Association of REALTORS®',
@@ -125,6 +135,13 @@ const SUPPLIED_LOGOS = [
     sha256: '1eaad40fac4d939c25c975bc32afb0cdd819b4c3715314399f3376c399e94901' },
   { logo: RAPATTONI_LOGO, alt: /rapattoni mls/i, width: 184, height: 36,
     sha256: '3272c3f7e2be6642ca71da5fe4a90346afa801411ee901f67e8d5a1bdc0eb4be' },
+]
+
+const PRIMARY_SOURCE_LOGOS_OCT_8 = [
+  { logo: HAR_LOGO, alt: /houston association of realtors/i, width: 300, height: 300,
+    sha256: HAR_LOGO_SHA256 },
+  { logo: COCONUT_COAST_LOGO, alt: /coconut coast organization of realtors/i, width: 400, height: 144,
+    sha256: COCONUT_COAST_LOGO_SHA256 },
 ]
 
 /*
@@ -303,27 +320,13 @@ test('the stale Florida naming never comes back anywhere in the page data', () =
   // "SWFL" and "Southwest Florida MLS" were never real names and must not
   // appear at all, in a card name or a description.
   const haystack = allItems().map((i) => `${i.name} ${i.desc}`).join('\n')
-  for (const stale of [/SWFL/i, /Southwest Florida MLS/i]) {
+  for (const stale of [/SWFL/i, /Southwest Florida MLS/i, /Bonita-Estero/i, /^Formerly /im]) {
     assert.equal(stale.test(haystack), false, `stale label ${stale} is present in the data`)
   }
 
-  // Bonita-Estero is a real former name, so it is allowed to survive only as a
-  // "Formerly ..." historical note. It must never be a card's own name, and
-  // must never stand alone as a description the way the old SWFL card had it.
-  for (const item of allItems()) {
-    assert.equal(
-      /bonita/i.test(item.name),
-      false,
-      `"${item.name}" still uses the retired Bonita-Estero name as its own name`,
-    )
-    if (/bonita/i.test(item.desc)) {
-      assert.match(
-        item.desc,
-        /^Formerly /,
-        `"${item.name}" mentions Bonita-Estero without marking it as a former name (got: ${item.desc})`,
-      )
-    }
-  }
+  const coconut = mlsItems().find((i) => i.name === 'Coconut Coast Organization of REALTORS®')
+  assert.ok(coconut, 'the Coconut Coast card is missing')
+  assert.equal(coconut.desc, 'Bonita Springs, Florida')
 })
 
 test('every referenced logo is a committed local asset that exists on disk', () => {
@@ -353,9 +356,9 @@ test('every referenced logo is a committed local asset that exists on disk', () 
  * something that is no longer the file he sent.
  */
 test('the CincyMLS card is bound to our own committed logo, not a wordmark', () => {
-  const cincy = mlsItems().find((i) => i.name === 'CincyMLS')
+  const cincy = mlsItems().find((i) => i.name === 'MLS of Greater Cincinnati (CincyMLS)')
   assert.ok(cincy, 'the CincyMLS card is missing')
-  assert.equal(cincy.desc, 'MLS of Greater Cincinnati')
+  assert.equal(cincy.desc, 'Cincinnati, Ohio')
   assert.equal(
     cincy.logo,
     CINCYMLS_LOGO,
@@ -385,6 +388,49 @@ test('the CincyMLS artwork keeps its supplied 595x336 proportions', () => {
     width: CINCYMLS_LOGO_WIDTH,
     height: CINCYMLS_LOGO_HEIGHT,
   })
+})
+
+test('HAR is a single Houston MLS card with a local logo', () => {
+  const harCards = mlsItems().filter((i) => /houston|har\b/i.test(`${i.name} ${i.desc}`))
+  assert.equal(harCards.length, 1, `expected one HAR/Houston card, got ${JSON.stringify(harCards)}`)
+  const har = harCards[0]
+  assert.equal(har.name, 'Houston Association of REALTORS® (HAR)')
+  assert.equal(har.desc, 'Houston, Texas')
+  assert.equal(har.logo, HAR_LOGO)
+  assert.match(har.logoAlt, /houston association of realtors/i)
+})
+
+test('MLS cards have stable local identifiers and no malformed public copy', () => {
+  const logoIds = new Set()
+  const publicText = mlsItems().map((i) => `${i.name}\n${i.desc}`).join('\n')
+  assert.doesNotMatch(publicText, /Brian|Frank|approval|Bridge status|task_|t_01/i)
+  for (const item of mlsItems()) {
+    assert.ok(item.logo, `"${item.name}" needs a local logo`)
+    assert.match(
+      item.logo,
+      /^\/images\/integrations\/[a-z0-9-]+\.(png|jpg)$/,
+      `"${item.name}" logo path is not a stable public asset path`,
+    )
+    const id = item.logo.replace(/^\/images\/integrations\//, '').replace(/\.(png|jpg)$/, '')
+    assert.equal(logoIds.has(id), false, `duplicate integration identifier "${id}"`)
+    logoIds.add(id)
+    assert.ok(item.logoAlt && item.logoAlt.trim().length > 0, `"${item.name}" needs logo alt text`)
+  }
+})
+
+test('the October 2026 primary-source logos are local, pinned, and screen-reader described', () => {
+  const byLogo = new Map(allItems().filter((i) => i.logo).map((i) => [i.logo, i]))
+  for (const expected of PRIMARY_SOURCE_LOGOS_OCT_8) {
+    const item = byLogo.get(expected.logo)
+    assert.ok(item, `no card is bound to ${expected.logo}`)
+    assert.ok(item.logoAlt && item.logoAlt.trim().length > 0, `"${item.name}" needs alt text`)
+    assert.match(item.logoAlt, expected.alt, `unhelpful alt text for "${item.name}": ${item.logoAlt}`)
+
+    const onDisk = path.join(publicDir, expected.logo.replace(/^\//, ''))
+    assert.ok(existsSync(onDisk), `missing committed asset: ${onDisk}`)
+    assert.deepEqual(pngSize(onDisk), { width: expected.width, height: expected.height })
+    assert.equal(sha256(onDisk), expected.sha256, `${expected.logo} is not the verified local artwork`)
+  }
 })
 
 test('a production build carries every referenced logo, byte for byte', (t) => {
@@ -463,6 +509,30 @@ test('every supplied 2026-10-02 logo is committed, pinned, and described for scr
     assert.deepEqual(pngSize(onDisk), { width: expected.width, height: expected.height })
     assert.equal(sha256(onDisk), expected.sha256, `${expected.logo} is not the committed supplied artwork`)
   }
+})
+
+test('the integration card CSS keeps logo frames and responsive grids stable', () => {
+  const css = readFileSync(appCssFile, 'utf8')
+  assert.match(
+    css,
+    /\.integration-logo-frame\s*{[\s\S]*width:\s*112px;[\s\S]*height:\s*68px;/,
+    'integration logo frame must keep fixed dimensions',
+  )
+  assert.match(
+    css,
+    /\.integration-logo-frame img\s*{[\s\S]*object-fit:\s*contain;/,
+    'integration logos must use contain to avoid brand distortion',
+  )
+  assert.match(
+    css,
+    /@media \(max-width: 1024px\)\s*{[\s\S]*\.integration-cards\s*{[\s\S]*grid-template-columns:\s*repeat\(2, 1fr\);/,
+    'tablet layout must render integration cards in two columns',
+  )
+  assert.match(
+    css,
+    /@media \(max-width: 768px\)\s*{[\s\S]*\.integration-cards\s*{[\s\S]*grid-template-columns:\s*1fr;/,
+    'phone layout must render integration cards in one column',
+  )
 })
 
 /*
