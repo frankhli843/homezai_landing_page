@@ -5,26 +5,33 @@
  * node:test run without booting React or a browser.
  *
  * `logo` is optional. When present it must be a site-relative path under
- * public/ pointing at artwork the partner supplied to us. Never point it at a
- * third-party or webmail URL, and never invent artwork for a partner that has
- * not sent any: a card with no `logo` renders an honest text wordmark instead.
+ * public/ pointing at supplied or primary-source verified artwork. Never point
+ * it at a third-party or webmail URL, and never invent artwork for a partner
+ * that has not sent any: a card with no `logo` renders an honest text wordmark
+ * instead.
  */
 export const integrationCategories = [
   {
     name: 'Multiple Listing Service (MLS)',
     items: [
       // Cincinnati shipped as a text wordmark until 2026-09-04, when Frank
-      // supplied the official CincyMLS artwork. It is now committed here
-      // like the other three, so every MLS card is real partner artwork.
+      // supplied the official CincyMLS artwork. It is now committed here like
+      // the other MLS cards, so every MLS card is real partner artwork.
       {
-        name: 'CincyMLS',
-        desc: 'MLS of Greater Cincinnati',
+        name: 'MLS of Greater Cincinnati (CincyMLS)',
+        desc: 'Cincinnati, Ohio',
         logo: '/images/integrations/cincymls.png',
         logoAlt: 'CincyMLS logo',
       },
       {
+        name: 'Houston Association of REALTORS® (HAR)',
+        desc: 'Houston, Texas',
+        logo: '/images/integrations/houston-association-of-realtors.png',
+        logoAlt: 'Houston Association of REALTORS logo',
+      },
+      {
         name: 'Coconut Coast Organization of REALTORS®',
-        desc: 'Formerly Bonita-Estero REALTORS®',
+        desc: 'Bonita Springs, Florida',
         logo: '/images/integrations/coconut-coast-organization-of-realtors.png',
         logoAlt: 'Coconut Coast Organization of REALTORS logo',
       },
