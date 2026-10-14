@@ -20,6 +20,8 @@ const CRMLS_LOGO = '/images/integrations/crmls.png'
 const BRIDGE_LOGO = '/images/integrations/bridge-interactive.png'
 const REALTYFEED_LOGO = '/images/integrations/realtyfeed.png'
 const RAPATTONI_LOGO = '/images/integrations/rapattoni-mls.png'
+const RECORE_LOGO = '/images/integrations/recore.png'
+const RECORE_LOGO_SHA256 = 'f5131ac00f7748fab6eac4d96639324c3237b00b508fb29aa1bd21af057e18f9'
 
 /*
  * sha256 of the CincyMLS artwork exactly as Frank supplied it on 2026-09-04.
@@ -125,6 +127,7 @@ const REQUIRED_MLS_SYSTEMS = [
   { name: 'Bridge Interactive', desc: 'USA and Canada', logo: BRIDGE_LOGO },
   { name: 'RealtyFeed', desc: 'USA and Canada', logo: REALTYFEED_LOGO },
   { name: 'Rapattoni MLS', desc: 'USA', logo: RAPATTONI_LOGO },
+  { name: 'REcore', desc: 'USA', logo: RECORE_LOGO },
 ]
 
 /*
@@ -490,7 +493,7 @@ test('MLS Systems and Services sits directly after the MLS category', () => {
   )
 })
 
-test('MLS Systems and Services lists exactly the three requested providers, in order', () => {
+test('MLS Systems and Services lists exactly the requested providers, in order', () => {
   assert.deepEqual(
     systemsItems().map((i) => i.name),
     REQUIRED_MLS_SYSTEMS.map((i) => i.name),
@@ -505,6 +508,26 @@ test('each MLS systems provider carries its requested coverage and logo binding'
     assert.equal(actual.desc, expected.desc, `wrong coverage for "${expected.name}"`)
     assert.equal(actual.logo, expected.logo, `wrong logo binding for "${expected.name}"`)
   }
+})
+
+test('REcore appears once under MLS Systems and Services with its supplied logo', () => {
+  const matches = integrationCategories.flatMap((category) =>
+    category.items
+      .filter((item) => item.name === 'REcore')
+      .map((item) => ({ category: category.name, item })),
+  )
+
+  assert.equal(matches.length, 1, 'expected one REcore card across the page')
+  assert.equal(matches[0].category, MLS_SYSTEMS_CATEGORY)
+  assert.equal(matches[0].item.desc, 'USA')
+  assert.equal(matches[0].item.logo, '/images/integrations/recore.png')
+  assert.equal(matches[0].item.logoAlt, 'REcore logo')
+})
+
+test('REcore uses the verified normalized supplied artwork', () => {
+  const file = path.join(publicDir, RECORE_LOGO.replace(/^\//, ''))
+  assert.deepEqual(pngSize(file), { width: 158, height: 54 })
+  assert.equal(sha256(file), RECORE_LOGO_SHA256)
 })
 
 test('no MLS systems provider leaks into the MLS organizations list', () => {
