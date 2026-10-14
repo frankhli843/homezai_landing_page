@@ -16,6 +16,7 @@ const CINCYMLS_LOGO = '/images/integrations/cincymls.png'
 const HAR_LOGO = '/images/integrations/houston-association-of-realtors.png'
 const COCONUT_COAST_LOGO = '/images/integrations/coconut-coast-organization-of-realtors.png'
 const SDMLS_LOGO = '/images/integrations/san-diego-mls.png'
+const CRMLS_LOGO = '/images/integrations/crmls.png'
 const BRIDGE_LOGO = '/images/integrations/bridge-interactive.png'
 const REALTYFEED_LOGO = '/images/integrations/realtyfeed.png'
 const RAPATTONI_LOGO = '/images/integrations/rapattoni-mls.png'
@@ -103,6 +104,13 @@ const REQUIRED_MLS = [
   // Added 2026-09-22 on Brian's request for the Innovate Realty onboarding as
   // a text wordmark. Brian supplied the SDMLS artwork on 2026-10-02.
   { name: 'San Diego MLS (SDMLS)', desc: 'San Diego, California', logo: SDMLS_LOGO },
+  // Brian, 2026-10-13: CRMLS for the rest of Innovate Realty's offices. He
+  // gave the location as "Chino Hills, CA"; the page spells states out.
+  {
+    name: 'California Regional Multiple Listing Service (CRMLS)',
+    desc: 'Chino Hills, California',
+    logo: CRMLS_LOGO,
+  },
 ]
 
 /*
@@ -251,6 +259,16 @@ const SUPPLIED_LOGOS_OCT_2 = [
 const SUPPLIED_LOGOS_OCT_5 = [
   { logo: REMAX_LOGO, alt: /re\/max/i, width: 145, height: 32,
     sha256: '85dd7b8b0caf4b5e0bcb0391de2a0c870da59b4696449e14d0fdbfeee75c3771' },
+]
+
+/*
+ * Brian's 2026-10-13 CRMLS artwork, a 200x100 PNG (sha256 2cbe12f7...99f1e8).
+ * Same trim as the 2026-10-02 logos: white margin cut to a 2px pad, metadata
+ * dropped, artwork pixels unchanged.
+ */
+const SUPPLIED_LOGOS_OCT_13 = [
+  { logo: CRMLS_LOGO, alt: /california regional multiple listing service/i, width: 164, height: 52,
+    sha256: '6134b5819aa7b631d622c215a8e49a3d4c4277ae7f9943c5bb4eb3ec595e9c7e' },
 ]
 
 function categoryItems(name) {
@@ -511,6 +529,31 @@ test('every supplied 2026-10-02 logo is committed, pinned, and described for scr
   }
 })
 
+test('the supplied 2026-10-13 CRMLS logo is committed, pinned, and described for screen readers', () => {
+  const byLogo = new Map(allItems().filter((i) => i.logo).map((i) => [i.logo, i]))
+  for (const expected of SUPPLIED_LOGOS_OCT_13) {
+    const item = byLogo.get(expected.logo)
+    assert.ok(item, `no card is bound to ${expected.logo}`)
+    assert.match(item.logoAlt ?? '', expected.alt, `unhelpful alt text for "${item.name}": ${item.logoAlt}`)
+
+    const onDisk = path.join(publicDir, expected.logo.replace(/^\//, ''))
+    assert.ok(existsSync(onDisk), `missing committed asset: ${onDisk}`)
+    assert.deepEqual(pngSize(onDisk), { width: expected.width, height: expected.height })
+    assert.equal(sha256(onDisk), expected.sha256, `${expected.logo} is not the committed supplied artwork`)
+  }
+})
+
+test('CRMLS is one California card that stays separate from San Diego MLS', () => {
+  const crmls = mlsItems().filter((i) => /crmls|california regional/i.test(i.name))
+  assert.equal(crmls.length, 1, `expected one CRMLS card, got ${JSON.stringify(crmls.map((i) => i.name))}`)
+  const sdmls = mlsItems().filter((i) => /sdmls|san diego/i.test(i.name))
+  assert.equal(sdmls.length, 1, 'CRMLS must not replace or merge into the San Diego MLS card')
+  // The card names the organization and where it is. It must not claim a
+  // display (IDX) permission, an availability date, or a market it was not
+  // asked to show.
+  assert.doesNotMatch(`${crmls[0].name} ${crmls[0].desc}`, /IDX|display|live|coming soon|available|statewide/i)
+})
+
 test('the integration card CSS keeps logo frames and responsive grids stable', () => {
   const css = readFileSync(appCssFile, 'utf8')
   assert.match(
@@ -563,6 +606,16 @@ test('the built Integrations page renders the new category and cards', { skip: !
   assert.ok(sdmls, 'the built page has no San Diego MLS card')
   assert.match(sdmls.head, /<img src="\/images\/integrations\/san-diego-mls\.png" alt="[^"]*San Diego MLS[^"]*"/)
   assert.doesNotMatch(sdmls.head, /integration-wordmark/, 'San Diego MLS still renders the text wordmark')
+
+  const crmls = cards.find((c) => c.name === 'California Regional Multiple Listing Service (CRMLS)')
+  assert.ok(crmls, 'the built page has no CRMLS card')
+  assert.equal(crmls.desc, 'Chino Hills, California')
+  assert.match(crmls.head, /<img src="\/images\/integrations\/crmls\.png" alt="[^"]*CRMLS[^"]*"/)
+  assert.equal(
+    cards.findIndex((c) => c.name === crmls.name),
+    cards.findIndex((c) => c.name === sdmls.name) + 1,
+    'CRMLS renders directly after San Diego MLS',
+  )
 
   const start = cards.findIndex((c) => c.name === REQUIRED_MLS_SYSTEMS[0].name)
   assert.ok(start >= 0, 'the built page has no MLS systems provider cards')
