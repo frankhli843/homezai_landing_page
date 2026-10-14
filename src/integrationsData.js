@@ -62,6 +62,16 @@ export const integrationCategories = [
         logo: '/images/integrations/san-diego-mls.png',
         logoAlt: 'San Diego MLS logo',
       },
+      // Requested by Brian on 2026-10-13 for the rest of the Innovate Realty
+      // footprint, with the logo he supplied. Like the SDMLS card it names the
+      // organization and its headquarters only, and claims nothing about what
+      // may be displayed from the feed.
+      {
+        name: 'California Regional Multiple Listing Service (CRMLS)',
+        desc: 'Chino Hills, California',
+        logo: '/images/integrations/crmls.png',
+        logoAlt: 'California Regional Multiple Listing Service (CRMLS) logo',
+      },
     ],
   },
   // Requested by Brian on 2026-10-02. These are the systems and services MLSs
