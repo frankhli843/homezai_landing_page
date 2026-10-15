@@ -100,6 +100,12 @@ export const integrationCategories = [
         logo: '/images/integrations/rapattoni-mls.png',
         logoAlt: 'Rapattoni MLS logo',
       },
+      {
+        name: 'REcore',
+        desc: 'USA',
+        logo: '/images/integrations/recore.png',
+        logoAlt: 'REcore logo',
+      },
     ],
   },
   // Brian's second 2026-10-02 request removed BoldTrail from CRM (it is now
