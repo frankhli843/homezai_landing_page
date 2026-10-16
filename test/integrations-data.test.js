@@ -21,7 +21,9 @@ const BRIDGE_LOGO = '/images/integrations/bridge-interactive.png'
 const REALTYFEED_LOGO = '/images/integrations/realtyfeed.png'
 const RAPATTONI_LOGO = '/images/integrations/rapattoni-mls.png'
 const RECORE_LOGO = '/images/integrations/recore.png'
+const MLS_GRID_LOGO = '/images/integrations/mls-grid.png'
 const RECORE_LOGO_SHA256 = 'f5131ac00f7748fab6eac4d96639324c3237b00b508fb29aa1bd21af057e18f9'
+const MLS_GRID_LOGO_SHA256 = 'ca695886ab6fe8c9e1834944cafb40e3d8af2aed06492f2681622099008e1081'
 
 /*
  * sha256 of the CincyMLS artwork exactly as Frank supplied it on 2026-09-04.
@@ -128,6 +130,7 @@ const REQUIRED_MLS_SYSTEMS = [
   { name: 'RealtyFeed', desc: 'USA and Canada', logo: REALTYFEED_LOGO },
   { name: 'Rapattoni MLS', desc: 'USA', logo: RAPATTONI_LOGO },
   { name: 'REcore', desc: 'USA', logo: RECORE_LOGO },
+  { name: 'MLS Grid', desc: 'USA', logo: MLS_GRID_LOGO },
 ]
 
 /*
@@ -528,6 +531,30 @@ test('REcore uses the verified normalized supplied artwork', () => {
   const file = path.join(publicDir, RECORE_LOGO.replace(/^\//, ''))
   assert.deepEqual(pngSize(file), { width: 158, height: 54 })
   assert.equal(sha256(file), RECORE_LOGO_SHA256)
+})
+
+test('MLS Grid appears once under MLS Systems and Services with only the requested facts', () => {
+  const matches = integrationCategories.flatMap((category) =>
+    category.items
+      .filter((item) => item.name === 'MLS Grid')
+      .map((item) => ({ category: category.name, item })),
+  )
+
+  assert.equal(matches.length, 1, 'expected one MLS Grid card across the page')
+  assert.equal(matches[0].category, MLS_SYSTEMS_CATEGORY)
+  assert.deepEqual(matches[0].item, {
+    name: 'MLS Grid',
+    desc: 'USA',
+    logo: MLS_GRID_LOGO,
+    logoAlt: 'MLS Grid logo',
+  })
+  assert.equal(allItems().some((item) => /MRED/i.test(item.name)), false, 'MRED is a separate request')
+})
+
+test('MLS Grid uses the normalized artwork supplied with the request', () => {
+  const file = path.join(publicDir, MLS_GRID_LOGO.replace(/^\//, ''))
+  assert.deepEqual(pngSize(file), { width: 128, height: 84 })
+  assert.equal(sha256(file), MLS_GRID_LOGO_SHA256)
 })
 
 test('no MLS systems provider leaks into the MLS organizations list', () => {

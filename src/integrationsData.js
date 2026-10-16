@@ -106,6 +106,12 @@ export const integrationCategories = [
         logo: '/images/integrations/recore.png',
         logoAlt: 'REcore logo',
       },
+      {
+        name: 'MLS Grid',
+        desc: 'USA',
+        logo: '/images/integrations/mls-grid.png',
+        logoAlt: 'MLS Grid logo',
+      },
     ],
   },
   // Brian's second 2026-10-02 request removed BoldTrail from CRM (it is now
