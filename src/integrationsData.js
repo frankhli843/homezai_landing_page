@@ -72,6 +72,19 @@ export const integrationCategories = [
         logo: '/images/integrations/crmls.png',
         logoAlt: 'California Regional Multiple Listing Service (CRMLS) logo',
       },
+      // Requested by Brian on 2026-10-24 with the logo and wording he
+      // supplied: "Midwest Real Estate Data (MRED), Chicago, IL & Chicagoland
+      // Area." Split into name and description like every other card, with
+      // the trailing period dropped because no card description carries one.
+      // The state stays "IL" as Brian wrote it. MRED is the data source; MLS
+      // Grid, listed under MLS Systems and Services, is the platform it is
+      // delivered through, so the two cards state different facts.
+      {
+        name: 'Midwest Real Estate Data (MRED)',
+        desc: 'Chicago, IL & Chicagoland Area',
+        logo: '/images/integrations/mred.png',
+        logoAlt: 'Midwest Real Estate Data (MRED) logo',
+      },
     ],
   },
   // Requested by Brian on 2026-10-02. These are the systems and services MLSs
