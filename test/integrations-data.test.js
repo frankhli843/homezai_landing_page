@@ -22,6 +22,7 @@ const REALTYFEED_LOGO = '/images/integrations/realtyfeed.png'
 const RAPATTONI_LOGO = '/images/integrations/rapattoni-mls.png'
 const RECORE_LOGO = '/images/integrations/recore.png'
 const MLS_GRID_LOGO = '/images/integrations/mls-grid.png'
+const MRED_LOGO = '/images/integrations/mred.png'
 const RECORE_LOGO_SHA256 = 'f5131ac00f7748fab6eac4d96639324c3237b00b508fb29aa1bd21af057e18f9'
 const MLS_GRID_LOGO_SHA256 = 'ca695886ab6fe8c9e1834944cafb40e3d8af2aed06492f2681622099008e1081'
 
@@ -114,6 +115,14 @@ const REQUIRED_MLS = [
     name: 'California Regional Multiple Listing Service (CRMLS)',
     desc: 'Chino Hills, California',
     logo: CRMLS_LOGO,
+  },
+  // Brian, 2026-10-24: "Midwest Real Estate Data (MRED), Chicago, IL &
+  // Chicagoland Area." with his supplied logo. Only the trailing period is
+  // normalized away; "IL" is kept as he wrote it.
+  {
+    name: 'Midwest Real Estate Data (MRED)',
+    desc: 'Chicago, IL & Chicagoland Area',
+    logo: MRED_LOGO,
   },
 ]
 
@@ -548,7 +557,6 @@ test('MLS Grid appears once under MLS Systems and Services with only the request
     logo: MLS_GRID_LOGO,
     logoAlt: 'MLS Grid logo',
   })
-  assert.equal(allItems().some((item) => /MRED/i.test(item.name)), false, 'MRED is a separate request')
 })
 
 test('MLS Grid uses the normalized artwork supplied with the request', () => {
@@ -803,4 +811,50 @@ test('every card has a non-empty name and description and no duplicate names', (
     assert.ok(item.name && item.name.trim().length > 0)
     assert.ok(item.desc && item.desc.trim().length > 0, `"${item.name}" has no description`)
   }
+})
+
+/*
+ * Brian, 2026-10-24 (Gmail 1a16f6f5e0330e6d): a distinct MRED card with his
+ * supplied PNG. The committed file is that 200x100 PNG with only its plain
+ * white margin trimmed and its metadata dropped, the same treatment as the
+ * 2026-10-02 logos; the digest pins the committed bytes.
+ */
+const MRED_LOGO_SHA256 = '469165fe515305aa4cc049cacaf51f32927c1910036e58d19bff6bc47a1efed0'
+
+test('MRED is one MLS organization card with exactly the requested wording', () => {
+  const matches = integrationCategories.flatMap((category) =>
+    category.items
+      .filter((item) => /MRED|Midwest Real Estate Data/i.test(item.name))
+      .map((item) => ({ category: category.name, item })),
+  )
+  assert.equal(matches.length, 1, 'expected exactly one MRED card across the page')
+  assert.equal(matches[0].category, MLS_CATEGORY)
+  assert.deepEqual(matches[0].item, {
+    name: 'Midwest Real Estate Data (MRED)',
+    desc: 'Chicago, IL & Chicagoland Area',
+    logo: MRED_LOGO,
+    logoAlt: 'Midwest Real Estate Data (MRED) logo',
+  })
+  // Brian's sentence, rebuilt from the card, differs only by its final period.
+  const { name, desc } = matches[0].item
+  assert.equal(`${name}, ${desc}.`, 'Midwest Real Estate Data (MRED), Chicago, IL & Chicagoland Area.')
+  assert.doesNotMatch(`${name} ${desc}`, /IDX|display|live|coming soon|available/i)
+})
+
+test('MRED and MLS Grid stay two cards stating different facts', () => {
+  const grid = allItems().filter((item) => item.name === 'MLS Grid')
+  assert.equal(grid.length, 1, 'the MLS Grid platform card must remain')
+  assert.equal(grid[0].desc, 'USA')
+  assert.equal(grid[0].logo, MLS_GRID_LOGO)
+  assert.ok(systemsItems().some((item) => item.name === 'MLS Grid'))
+  assert.equal(systemsItems().some((item) => /MRED/i.test(item.name)), false,
+    'MRED is a data source, not an MLS system')
+  assert.equal(mlsItems().some((item) => /MLS Grid/i.test(item.name)), false)
+})
+
+test('the committed MRED logo is the supplied artwork, trimmed only', () => {
+  const file = path.join(publicDir, MRED_LOGO.replace(/^\//, ''))
+  assert.ok(existsSync(file), `missing committed asset: ${file}`)
+  assert.deepEqual(pngSize(file), { width: 176, height: 43 })
+  assert.equal(sha256(file), MRED_LOGO_SHA256)
 })
