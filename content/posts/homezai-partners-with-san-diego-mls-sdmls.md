@@ -47,8 +47,8 @@ excerpt: >-
   reporting.
 status: published
 author: >-
-  Brian
-  Schoedel
+  Homezai
+  Team
 publishedAt: '2026-11-05T16:26:00Z'
 updatedAt: '2026-11-05T16:26:00Z'
 heroImage: /blog-media/homezai-san-diego-mls-press-release.webp
