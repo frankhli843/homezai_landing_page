@@ -50,7 +50,7 @@ author: >-
   Homezai
   Team
 publishedAt: '2026-11-05T16:26:00Z'
-updatedAt: '2026-11-05T16:26:00Z'
+updatedAt: '2026-11-06T09:42:00Z'
 heroImage: /blog-media/homezai-san-diego-mls-press-release.webp
 heroImageAlt: >-
   Homezai
@@ -170,3 +170,5 @@ Homezai 
 Email: Brian@Homezai.com 
 
 Website: https://homezai.com
+
+Source: EINPresswire - [Homezai Partners with San Diego MLS to Bring AI-Powered Lead Generation and Showing Management to Real Estate Pros](https://www.einpresswire.com/article/954777708/homezai-partners-with-san-diego-mls-to-bring-ai-powered-lead-generation-showing-management-to-real-estate-pros)
