@@ -1,0 +1,16 @@
+/*
+ * Small additions to the compiled Figma stylesheet (figma.css) for rules the design
+ * does not carry. Keep this file short; layout and colour come from figma.css.
+ */
+
+/* The header wordmark link keeps a 44px touch target even when the mark renders at 40px. */
+.site-logo-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* Smooth in-page jumps for the menu's section links (Pricing Tiers, Onboarding, FAQ). */
+html {
+  scroll-behavior: smooth;
+}

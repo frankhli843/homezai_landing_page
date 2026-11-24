@@ -15,13 +15,7 @@ import { metaForRoute } from '../src/content/seo.js'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const appSource = readFileSync(path.join(repoRoot, 'src', 'App.jsx'), 'utf8')
-
-function componentSource(name) {
-  const start = appSource.indexOf(`function ${name}(`)
-  assert.ok(start >= 0, `${name} is not defined in src/App.jsx`)
-  const next = appSource.indexOf('\nfunction ', start + 1)
-  return appSource.slice(start, next === -1 ? undefined : next)
-}
+const siteSource = (...parts) => readFileSync(path.join(repoRoot, 'src', 'site', ...parts), 'utf8')
 
 test('/try-now/ is a real prerendered route with its own metadata', () => {
   assert.ok(STATIC_ROUTES.includes('/try-now/'))
@@ -32,27 +26,27 @@ test('/try-now/ is a real prerendered route with its own metadata', () => {
 })
 
 test('the Try Now page collects no credentials and hands off to the app', () => {
-  const source = componentSource('TryNowPage')
-  assert.doesNotMatch(source, /<input|<form|type="password"/)
+  const source = siteSource('pages', 'TryNowPage.jsx')
+  assert.doesNotMatch(source, /<input|<form|type="password"|autoComplete=/)
   assert.match(source, /href={APP_URL}/)
-  assert.match(appSource, /const APP_URL = 'https:\/\/app\.homezai\.com'/)
+  assert.match(siteSource('navigation.js'), /export const APP_URL = 'https:\/\/app\.homezai\.com\/'/)
   assert.match(source, /Activate your account/)
   assert.match(source, /Request access/)
 })
 
-test('the header CTA is Try Now and points at /try-now', () => {
-  const nav = componentSource('Navbar')
-  assert.match(nav, /<Link to="\/try-now" className="btn btn-primary btn-pill nav-cta"[\s\S]*?>Try Now<\/Link>/)
+test('the header CTA is TRY NOW and points at /try-now', () => {
+  const header = siteSource('Header.jsx')
+  assert.match(header, /<Link to="\/try-now" className="[^"]*bg-blue-600[^"]*">\s*TRY NOW\s*<\/Link>/)
 })
 
 test('pricing shows Premium Agent free and Pro Agent at $8/month billed $96/year', () => {
-  const pricing = componentSource('PricingPage')
-  assert.match(pricing, /name: 'Premium Agent'[\s\S]*?price: '\$0'/)
-  assert.match(pricing, /name: 'Pro Agent'[\s\S]*?price: '\$8'[\s\S]*?Billed annually at \$96\/year/)
-  // The brokerage and MLS/association quote routes stay available.
-  assert.match(pricing, /id="quote-form"/)
-  assert.match(pricing, /Brokerage Plan/)
-  assert.match(pricing, /Enterprise Plan/)
+  const pricing = siteSource('pages', 'PricingPage.jsx')
+  assert.match(pricing, />Premium Agent<\/h3>[\s\S]*?>\$0<\/span>/)
+  assert.match(pricing, />Pro Agent<\/h3>[\s\S]*?>\$8<\/span>[\s\S]*?Billed yearly · \$96 per year/)
+  assert.match(pricing, />Pro Team<\/h3>/)
+  assert.match(pricing, />Brokerage Enterprise<\/h3>/)
+  assert.match(pricing, /const PRO_MONTHLY_PER_USER = 8/)
+  assert.doesNotMatch(pricing, /not defined|coming soon|embed ready/i, 'design placeholders must not ship')
 })
 
 test('the legal paths the app used to link answer with redirects to the current pages', () => {
@@ -69,6 +63,7 @@ test('the build emits /try-now/ and both legal redirect documents', { skip: !exi
   const tryNow = readFileSync(path.join(dist, 'try-now', 'index.html'), 'utf8')
   assert.match(tryNow, /<link rel="canonical" href="https:\/\/homezai\.com\/try-now\/"/)
   assert.match(tryNow, /Activate your account/)
+  assert.doesNotMatch(tryNow, /<input/)
   assert.doesNotMatch(tryNow, /type="password"/)
   for (const [from, to] of [['terms-conditions', '/terms/'], ['privacy-policy', '/privacy/']]) {
     const html = readFileSync(path.join(dist, from, 'index.html'), 'utf8')

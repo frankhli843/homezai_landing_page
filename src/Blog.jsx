@@ -1,5 +1,8 @@
 /*
- * The public blog: the index, the article page and the home page feature strip.
+ * The article page and the not found page.
+ *
+ * Articles are listed on /news (src/site/pages/NewsPage.jsx) and keep their published
+ * addresses at /blog/<slug>/.
  *
  * Everything these components render was generated at build time by
  * scripts/build-content.mjs from the markdown in content/posts. Only published
@@ -15,10 +18,11 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-import { posts, featuredPosts } from './generated/content.js'
+import { posts } from './generated/content.js'
 import { trackEvent } from './analytics'
-import { BLOG_INDEX_TITLE, SITE_NAME, metaForRoute } from './content/seo.js'
+import { SITE_NAME, metaForRoute } from './content/seo.js'
 import { formatPublishedDate } from './content/formatDate.js'
+import { articleTags } from './site/articleTags.js'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -52,121 +56,6 @@ function useDocumentMeta(path, context) {
   }, [path, context?.post?.slug])
 }
 
-/**
- * One card. The whole card is not a link; the headline is, so a screen reader
- * announces one meaningful link per article rather than three that read the same.
- */
-function ArticleCard({ post, location }) {
-  return (
-    <article className="blog-card">
-      <Link
-        to={`/blog/${post.slug}/`}
-        className="blog-card-media"
-        tabIndex={-1}
-        aria-hidden="true"
-        onClick={() => trackEvent('blog_card_click', { button_location: location, page_path: `/blog/${post.slug}/` })}
-      >
-        <img
-          src={asset(post.heroImage)}
-          alt=""
-          width={post.heroImageWidth || 1200}
-          height={post.heroImageHeight || 630}
-          loading="lazy"
-          decoding="async"
-        />
-      </Link>
-      <div className="blog-card-body">
-        <p className="blog-card-meta">
-          <time dateTime={post.publishedAt}>{formatPublishedDate(post.publishedAt)}</time>
-          <span aria-hidden="true"> &middot; </span>
-          <span>{post.readingMinutes} min read</span>
-        </p>
-        <h3 className="blog-card-title">
-          <Link
-            to={`/blog/${post.slug}/`}
-            onClick={() => trackEvent('blog_card_click', { button_location: location, page_path: `/blog/${post.slug}/` })}
-          >
-            {post.title}
-          </Link>
-        </h3>
-        <p className="blog-card-excerpt">{post.excerpt}</p>
-      </div>
-    </article>
-  )
-}
-
-/** The home page strip. Renders nothing at all when no article is featured. */
-export function FeaturedArticles() {
-  if (featuredPosts.length === 0) return null
-  return (
-    <section className="section blog-featured" id="from-the-blog" aria-labelledby="from-the-blog-heading">
-      <div className="section-container">
-        <h2 className="section-title" id="from-the-blog-heading">
-          From the Homezai blog
-        </h2>
-        <p className="section-subtitle">
-          What we are building, what we are learning, and what it means for your showings.
-        </p>
-        <div className={`blog-grid blog-grid-count-${featuredPosts.length}`}>
-          {featuredPosts.map((post) => (
-            <ArticleCard key={post.id} post={post} location="home_featured" />
-          ))}
-        </div>
-        <div className="blog-featured-more">
-          <Link to="/blog/" className="btn btn-outline">
-            Read the blog
-          </Link>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export function BlogIndexPage() {
-  useDocumentMeta('/blog/', {})
-  useEffect(() => {
-    document.title = `${BLOG_INDEX_TITLE} | ${SITE_NAME}`
-    // Structural only. GA4 already attributes the campaign and the referrer itself, so
-    // nothing here needs to carry a reader's identity, and nothing does.
-    trackEvent('blog_index_view', { published_count: posts.length, page_path: '/blog/' })
-  }, [])
-
-  return (
-    <main className="blog-page">
-      <header className="blog-hero">
-        <div className="section-container">
-          <h1>Homezai blog</h1>
-          <p className="blog-hero-lede">
-            Product news, MLS and association updates, and practical notes on running
-            showings from the team building Homezai.
-          </p>
-        </div>
-      </header>
-
-      <div className="section-container blog-list-container">
-        {posts.length === 0 ? (
-          <div className="blog-empty">
-            <h2>Nothing published yet</h2>
-            <p>
-              The first Homezai articles are on their way. In the meantime, have a look
-              at what the platform does.
-            </p>
-            <Link to="/pricing" className="btn btn-primary">
-              See plans and pricing
-            </Link>
-          </div>
-        ) : (
-          <div className={`blog-grid blog-grid-count-${Math.min(posts.length, 3)}`}>
-            {posts.map((post) => (
-              <ArticleCard key={post.id} post={post} location="blog_index" />
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
-  )
-}
-
 export function ArticlePage() {
   const { slug } = useParams()
   const post = posts.find((entry) => entry.slug === slug)
@@ -186,14 +75,27 @@ export function ArticlePage() {
 
   if (!post) return <NotFoundPage />
 
+  const tags = articleTags(post).slice(0, 8)
+
+  /*
+   * The class names here are the ones src/admin/previewTemplate.js renders, and App.css
+   * styles both, so the editor preview shows an article exactly as a reader will.
+   */
   return (
-    <main className="blog-page">
+    <main className="blog-page" id="main-content" tabIndex="-1">
       <article className="article">
         <header className="article-header">
           <div className="article-container">
-            <p className="article-eyebrow">
-              <Link to="/blog/">Blog</Link>
+            <p className="article-back">
+              <Link to="/news">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="m12 19-7-7 7-7" />
+                  <path d="M19 12H5" />
+                </svg>
+                Back to News
+              </Link>
             </p>
+            <p className="article-eyebrow">News</p>
             <h1>{post.title}</h1>
             <p className="article-meta">
               <span>{post.author}</span>
@@ -202,6 +104,13 @@ export function ArticlePage() {
               <span aria-hidden="true"> &middot; </span>
               <span>{post.readingMinutes} min read</span>
             </p>
+            {tags.length > 0 ? (
+              <ul className="article-tags" aria-label="Article tags">
+                {tags.map((tag) => (
+                  <li key={tag}>{tag}</li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </header>
 
@@ -224,12 +133,12 @@ export function ArticlePage() {
             </p>
           ) : null}
 
-          <nav className="article-footer-nav" aria-label="More from the blog">
-            <Link to="/blog/" className="btn btn-outline">
-              Back to the blog
+          <nav className="article-footer-nav" aria-label="More from Homezai">
+            <Link to="/news" className="article-button article-button-outline">
+              Back to News
             </Link>
-            <Link to="/contact" className="btn btn-primary">
-              Schedule a demo
+            <Link to="/try-now" className="article-button article-button-primary">
+              TRY NOW
             </Link>
           </nav>
         </div>
@@ -249,16 +158,17 @@ export function NotFoundPage() {
     document.title = `Page not found | ${SITE_NAME}`
   }, [])
   return (
-    <main className="blog-page">
-      <div className="section-container blog-empty" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
+    <main className="blog-page" id="main-content" tabIndex="-1">
+      <div className="article-container not-found">
+        <p className="article-eyebrow">404</p>
         <h1>Page not found</h1>
         <p>That address does not exist on homezai.com. It may have moved, or the link may be incomplete.</p>
         <div className="article-footer-nav">
-          <Link to="/" className="btn btn-primary">
+          <Link to="/" className="article-button article-button-primary">
             Go to the home page
           </Link>
-          <Link to="/blog/" className="btn btn-outline">
-            Read the blog
+          <Link to="/news" className="article-button article-button-outline">
+            Read the news
           </Link>
         </div>
       </div>

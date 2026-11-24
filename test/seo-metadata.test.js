@@ -77,7 +77,7 @@ describe('article metadata', () => {
 describe('index and static route metadata', () => {
   test('the blog index has its own title, description and canonical', () => {
     const meta = metaForRoute('/blog/', {})
-    assert.match(meta.title, /Blog/)
+    assert.match(meta.title, /Stories/)
     assert.ok(meta.description.length > 20)
     assert.equal(meta.canonical, 'https://homezai.com/blog/')
     assert.equal(meta.ogType, 'website')

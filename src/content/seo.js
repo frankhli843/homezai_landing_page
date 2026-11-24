@@ -24,7 +24,7 @@ export const HOME_TITLE = 'Homezai - AI Showings Management for Real Estate'
 const HOME_DESCRIPTION =
   'Homezai revolutionizes property showings for real estate professionals with intelligent scheduling, automated routing, and seamless integrations.'
 
-export const BLOG_INDEX_TITLE = 'Blog'
+export const BLOG_INDEX_TITLE = 'Stories'
 
 export const BLOG_INDEX_DESCRIPTION =
   'News, product updates and practical guidance from the Homezai team on showings, MLS integrations and the day to day work of a real estate professional.'
@@ -41,6 +41,26 @@ const DEFAULT_SOCIAL_IMAGE_HEIGHT = 400
 const STATIC_META = {
   '/': { title: HOME_TITLE, description: HOME_DESCRIPTION, bare: true },
   '/blog/': { title: BLOG_INDEX_TITLE, description: BLOG_INDEX_DESCRIPTION },
+  '/about/': {
+    title: 'About Us',
+    description: 'Homezai makes the behind-the-scenes work of real estate simpler, so agents spend more time with clients and less time on busywork.',
+  },
+  '/benefits/': {
+    title: 'Benefits',
+    description: 'Generate leads from your own listings, simplify showing scheduling and let AI organize buyer activity and next steps.',
+  },
+  '/news/': {
+    title: 'News',
+    description: 'Homezai announcements, partnerships and media coverage from across the real estate industry.',
+  },
+  '/partners/mls/': {
+    title: 'MLS Partners',
+    description: 'How MLSs and associations bring AI showing management and lead generation to their members with Homezai.',
+  },
+  '/partners/brokerages/': {
+    title: 'Brokerage Partners',
+    description: 'Give every agent in your brokerage one branded experience for generating opportunities and coordinating showings.',
+  },
   '/pricing/': {
     title: 'Plans and Pricing',
     description:

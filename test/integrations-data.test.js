@@ -10,7 +10,6 @@ import { integrationCategories } from '../src/integrationsData.js'
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = path.join(repoRoot, 'public')
 const distDir = path.join(repoRoot, 'dist')
-const appCssFile = path.join(repoRoot, 'src', 'App.css')
 
 const CINCYMLS_LOGO = '/images/integrations/cincymls.png'
 const HAR_LOGO = '/images/integrations/houston-association-of-realtors.png'
@@ -612,28 +611,20 @@ test('CRMLS is one California card that stays separate from San Diego MLS', () =
   assert.doesNotMatch(`${crmls[0].name} ${crmls[0].desc}`, /IDX|display|live|coming soon|available|statewide/i)
 })
 
-test('the integration card CSS keeps logo frames and responsive grids stable', () => {
-  const css = readFileSync(appCssFile, 'utf8')
-  assert.match(
-    css,
-    /\.integration-logo-frame\s*{[\s\S]*width:\s*112px;[\s\S]*height:\s*68px;/,
-    'integration logo frame must keep fixed dimensions',
-  )
-  assert.match(
-    css,
-    /\.integration-logo-frame img\s*{[\s\S]*object-fit:\s*contain;/,
-    'integration logos must use contain to avoid brand distortion',
-  )
-  assert.match(
-    css,
-    /@media \(max-width: 1024px\)\s*{[\s\S]*\.integration-cards\s*{[\s\S]*grid-template-columns:\s*repeat\(2, 1fr\);/,
-    'tablet layout must render integration cards in two columns',
-  )
-  assert.match(
-    css,
-    /@media \(max-width: 768px\)\s*{[\s\S]*\.integration-cards\s*{[\s\S]*grid-template-columns:\s*1fr;/,
-    'phone layout must render integration cards in one column',
-  )
+test('the Integrations page renders every card from the data with a stable logo frame and responsive grid', () => {
+  /*
+   * Since the Figma redesign the page is src/site/pages/IntegrationsPage.jsx, styled
+   * with the compiled design utilities rather than App.css. The same guarantees hold:
+   * a fixed logo box, contain scaling so no brand is distorted, and one, two then
+   * three columns as the screen widens.
+   */
+  const page = readFileSync(path.join(repoRoot, 'src', 'site', 'pages', 'IntegrationsPage.jsx'), 'utf8')
+  assert.match(page, /import \{ integrationCategories \} from '\.\.\/\.\.\/integrationsData\.js'/)
+  assert.match(page, /integrationCategories\.map\(/, 'categories must render from the data module')
+  assert.match(page, /category\.items\.map\(/, 'cards must render from the data module')
+  assert.match(page, /<div className="flex w-\[92px\] shrink-0 items-center justify-center pr-5">/, 'the logo frame keeps a fixed width')
+  assert.match(page, /src=\{item\.logo\} alt=\{item\.logoAlt\} className=\{`\$\{LOGO_SIZES\[item\.name\] \|\| 'h-12 w-\[88px\]'\} object-contain`\}/, 'logos are bound to the data and scale with contain')
+  assert.match(page, /className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"/, 'one column on phones, two on tablets, three on desktop')
 })
 
 /*
@@ -651,13 +642,13 @@ function decodeEntities(html) {
 test('the built Integrations page renders the new category and cards', { skip: !existsSync(builtIntegrations) && 'no build in dist/' }, () => {
   const html = decodeEntities(readFileSync(builtIntegrations, 'utf8'))
 
-  const headings = [...html.matchAll(/<h2>([^<]+)<\/h2>/g)].map((m) => m[1])
+  const headings = [...html.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((m) => m[1])
   const mlsAt = headings.indexOf(MLS_CATEGORY)
   assert.ok(mlsAt >= 0, `no "${MLS_CATEGORY}" heading in the built page`)
   assert.equal(headings[mlsAt + 1], MLS_SYSTEMS_CATEGORY, `built heading order: ${JSON.stringify(headings)}`)
 
   const cards = [...html.matchAll(
-    /<div class="integration-card">([\s\S]*?)<h3>([^<]+)<\/h3><p>([^<]+)<\/p>/g,
+    /<article class="integration-card[^"]*">([\s\S]*?)<h3[^>]*>([^<]+)<\/h3><p[^>]*>([^<]+)<\/p>/g,
   )].map((m) => ({ head: m[1], name: m[2], desc: m[3] }))
 
   const sdmls = cards.find((c) => c.name === 'San Diego MLS (SDMLS)')
@@ -765,12 +756,12 @@ test('every logo supplied on 2026-10-02 and 2026-10-05 is committed, pinned, and
 
 test('the built Integrations page matches the data: headings, counts, cards and logos', { skip: !existsSync(builtIntegrations) && 'no build in dist/' }, () => {
   const html = decodeEntities(readFileSync(builtIntegrations, 'utf8')).replace(/<!-- -->/g, '')
-  const list = html.slice(html.indexOf('class="integrations-list"'), html.indexOf('class="integrations-cta"'))
+  const list = html.slice(html.indexOf('class="integrations-list'), html.indexOf('class="integrations-cta'))
   assert.ok(list.length > 0, 'no integrations list in the built page')
 
-  const sections = list.split('<div class="integration-category">').slice(1)
+  const sections = list.split('<section class="integration-category"').slice(1)
   assert.deepEqual(
-    sections.map((s) => s.match(/<h2>([^<]+)<\/h2>/)?.[1]),
+    sections.map((s) => s.match(/<h2[^>]*>([^<]+)<\/h2>/)?.[1]),
     EXPECTED_CATEGORY_ORDER,
     'built category headings',
   )
@@ -778,9 +769,9 @@ test('the built Integrations page matches the data: headings, counts, cards and 
   sections.forEach((section, i) => {
     const cat = integrationCategories[i]
     const cards = [...section.matchAll(
-      /<div class="integration-card">([\s\S]*?)<h3>([^<]+)<\/h3><p>([^<]+)<\/p>/g,
+      /<article class="integration-card[^"]*">([\s\S]*?)<h3[^>]*>([^<]+)<\/h3><p[^>]*>([^<]+)<\/p>/g,
     )].map((m) => ({ head: m[1], name: m[2], desc: m[3] }))
-    const count = section.match(/class="category-count">(\d+) integrations? available</)
+    const count = section.match(/class="category-count[^"]*">(\d+) integrations? available</)
     assert.ok(count, `"${cat.name}" has no count label`)
     assert.equal(Number(count[1]), cards.length, `"${cat.name}" count label disagrees with its rendered cards`)
     assert.deepEqual(cards.map((c) => c.name), cat.items.map((it) => it.name), `"${cat.name}" rendered cards`)
@@ -796,12 +787,12 @@ test('the built Integrations page matches the data: headings, counts, cards and 
   })
 
   for (const removed of REMOVED_CARDS) {
-    assert.equal(list.includes(`<h3>${removed}</h3>`), false, `the built page still lists "${removed}"`)
+    assert.equal(new RegExp(`<h3[^>]*>${removed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h3>`).test(list), false, `the built page still lists "${removed}"`)
   }
 
   const roster = sections[EXPECTED_CATEGORY_ORDER.indexOf(ROSTER_CATEGORY)]
-  assert.match(roster, /class="category-count">5 integrations available</, 'User Roster Feeds count label')
-  assert.match(roster, /<h3>RE\/MAX \(BoldTrail\)<\/h3><p>MAX\/CENTER Agent roster synchronization<\/p>/)
+  assert.match(roster, /class="category-count[^"]*">5 integrations available</, 'User Roster Feeds count label')
+  assert.match(roster, /<h3[^>]*>RE\/MAX \(BoldTrail\)<\/h3><p[^>]*>MAX\/CENTER Agent roster synchronization<\/p>/)
 })
 
 test('every card has a non-empty name and description and no duplicate names', () => {

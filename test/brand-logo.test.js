@@ -14,8 +14,17 @@ import {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = path.join(repoRoot, 'public')
+/*
+ * The shared header and footer live in src/site/ since the Figma redesign. The
+ * wordmark rules below apply to that shell, and App.jsx is still checked for
+ * any stray reference to the retired asset.
+ */
 const appSource = readFileSync(path.join(repoRoot, 'src', 'App.jsx'), 'utf8')
+const shellSource = ['Header.jsx', 'Footer.jsx']
+  .map((name) => readFileSync(path.join(repoRoot, 'src', 'site', name), 'utf8'))
+  .join('\n')
 const cssSource = readFileSync(path.join(repoRoot, 'src', 'App.css'), 'utf8')
+const shellCssSource = readFileSync(path.join(repoRoot, 'src', 'site', 'site.css'), 'utf8')
 
 /*
  * SHA-256 of the artwork Frank supplied in the Discord thread on 2026-09-03,
@@ -46,9 +55,9 @@ function readPngSize(file) {
   return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) }
 }
 
-/** Every <img> tag in App.jsx, as raw source strings. */
+/** Every <img> tag in the shared header and footer, as raw source strings. */
 function imgTags() {
-  return appSource.match(/<img[^>]*\/>/g) ?? []
+  return shellSource.match(/<img[^>]*\/>/g) ?? []
 }
 
 /** The <img> tags that render the Homezai wordmark. */
@@ -101,7 +110,7 @@ test('the accessible name is the brand, never a file name', () => {
 })
 
 test('no source file references the retired logo asset', () => {
-  for (const [name, source] of [['App.jsx', appSource], ['App.css', cssSource]]) {
+  for (const [name, source] of [['App.jsx', appSource], ['the site shell', shellSource], ['App.css', cssSource], ['site.css', shellCssSource]]) {
     assert.ok(
       !source.includes(RETIRED_LOGO),
       `${name} still references the retired ${RETIRED_LOGO}`,
@@ -111,8 +120,8 @@ test('no source file references the retired logo asset', () => {
 
 test('both shared shell placements render the one canonical wordmark', () => {
   assert.ok(
-    /from '\.\/brand\.js'/.test(appSource),
-    'App.jsx must import the canonical mark from brand.js rather than hardcoding a path',
+    /from '\.\.\/brand\.js'/.test(shellSource),
+    'the header and footer must import the canonical mark from brand.js rather than hardcoding a path',
   )
   assert.equal(
     wordmarkTags().length,
@@ -120,8 +129,8 @@ test('both shared shell placements render the one canonical wordmark', () => {
     'expected exactly two wordmark placements, the shared header and the shared footer',
   )
   assert.ok(
-    !/images\/homezai-wordmark\.png/.test(appSource),
-    'App.jsx must not hardcode the wordmark path, it must use the brand.js constant',
+    !/images\/homezai-wordmark\.png/.test(appSource + shellSource),
+    'the site shell must not hardcode the wordmark path, it must use the brand.js constant',
   )
 })
 
@@ -152,7 +161,7 @@ test('the opaque wordmark is never recoloured by the old inverting filter', () =
     )
   }
   assert.ok(
-    !/\.logo-img-light\b/.test(cssSource),
+    !/\.logo-img-light\b/.test(cssSource + shellCssSource),
     'the inverting logo filter is dead once the transparent logo is retired and must not linger',
   )
 })
@@ -163,7 +172,7 @@ test('each wordmark placement stays a working link to the home page', () => {
    * pins the anchor that wraps each placement, so losing the link, or pointing
    * it somewhere other than the home route, fails here.
    */
-  const homeLinkedMarks = appSource.match(
+  const homeLinkedMarks = shellSource.match(
     /<Link\s+to="\/"[^>]*>\s*(?:<span[^>]*>\s*)?<img[^>]*HOMEZAI_WORDMARK[^>]*\/>/g,
   ) ?? []
   assert.equal(
@@ -175,14 +184,15 @@ test('each wordmark placement stays a working link to the home page', () => {
 
 test('the header logo link meets the 44px interactive target floor', () => {
   /*
-   * The navbar is 72px tall, so there is room for a compliant target without
+   * The header is 72px tall, so there is room for a compliant target without
    * changing the header height. The rendered box is verified in a real browser
    * as well, this guards the rule from being deleted from the stylesheet.
    */
-  const rule = cssSource.match(/\.navbar\s+\.nav-logo\s*\{[^}]*\}/)
-  assert.ok(rule, '.navbar .nav-logo must declare an explicit interactive target')
+  assert.match(shellSource, /<Link to="\/" [^>]*className="site-logo-link /, 'the header home link must carry .site-logo-link')
+  const rule = shellCssSource.match(/\.site-logo-link\s*\{[^}]*\}/)
+  assert.ok(rule, '.site-logo-link must declare an explicit interactive target')
   const min = rule[0].match(/min-height:\s*(\d+)px/)
-  assert.ok(min, '.navbar .nav-logo must set a min-height')
+  assert.ok(min, '.site-logo-link must set a min-height')
   assert.ok(
     Number(min[1]) >= 44,
     `header logo link target must be at least 44px, got ${min[1]}px`,

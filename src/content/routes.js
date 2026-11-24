@@ -14,9 +14,14 @@
 /** Every non article route the application can render. */
 export const STATIC_ROUTES = Object.freeze([
   '/',
+  '/about/',
+  '/benefits/',
+  '/news/',
   '/blog/',
   '/pricing/',
   '/try-now/',
+  '/partners/mls/',
+  '/partners/brokerages/',
   '/integrations/',
   '/contact/',
   '/terms/',
