@@ -67,8 +67,8 @@ function Navbar() {
         <div className="nav-right">
           <a href="https://app.homezai.com" target="_blank" rel="noopener noreferrer" className="nav-login"
             onClick={() => trackEvent('app_login_click', { button_location: 'navbar', page_path: window.location.pathname })}>Login</a>
-          <Link to="/pricing#quote-form" className="btn btn-primary btn-pill nav-cta"
-            onClick={() => trackEvent('pricing_quote_click', { button_location: 'navbar', page_path: window.location.pathname })}>Get a Quote</Link>
+          <Link to="/try-now" className="btn btn-primary btn-pill nav-cta"
+            onClick={() => trackEvent('try_now_click', { button_location: 'navbar', page_path: window.location.pathname })}>Try Now</Link>
         </div>
         <button className="mobile-menu-btn" onClick={() => {
           document.querySelector('.nav-links').classList.toggle('mobile-open')
@@ -92,6 +92,7 @@ function Footer() {
           <div className="footer-links-group">
             <h4>Product</h4>
             <Link to="/#features">Features</Link>
+            <Link to="/try-now">Try Now</Link>
             <Link to="/pricing">Pricing</Link>
             <Link to="/integrations">Integrations</Link>
             <Link to="/blog/">Blog</Link>
@@ -159,12 +160,13 @@ function HomePage() {
               integrations—all under your brand.
             </p>
             <div className="hero-actions">
-              <Link to="/contact" className="btn btn-primary"
-                onClick={() => trackEvent('demo_cta_click', { button_location: 'hero', cta_label: 'Schedule a Demo', page_path: window.location.pathname })}>
-                Schedule a Demo <span className="arrow">→</span>
+              <Link to="/try-now" className="btn btn-primary"
+                onClick={() => trackEvent('try_now_click', { button_location: 'hero', page_path: window.location.pathname })}>
+                Try Now <span className="arrow">→</span>
               </Link>
-              <Link to="/#features" className="btn btn-outline">
-                Learn more about Homezai
+              <Link to="/contact" className="btn btn-outline"
+                onClick={() => trackEvent('demo_cta_click', { button_location: 'hero', cta_label: 'Schedule a Demo', page_path: window.location.pathname })}>
+                Schedule a Demo
               </Link>
             </div>
           </div>
@@ -352,8 +354,10 @@ function HomePage() {
             Join hundreds of real estate teams already using Homezai to streamline their showing operations.
           </p>
           <div className="cta-actions">
-            <Link to="/contact" className="btn btn-white"
-              onClick={() => trackEvent('demo_cta_click', { button_location: 'cta_section', cta_label: 'Schedule a Demo', page_path: window.location.pathname })}>Schedule a Demo →</Link>
+            <Link to="/try-now" className="btn btn-white"
+              onClick={() => trackEvent('try_now_click', { button_location: 'cta_section', page_path: window.location.pathname })}>Try Now →</Link>
+            <Link to="/contact" className="btn btn-outline-light"
+              onClick={() => trackEvent('demo_cta_click', { button_location: 'cta_section', cta_label: 'Schedule a Demo', page_path: window.location.pathname })}>Schedule a Demo</Link>
           </div>
         </div>
       </section>
@@ -1040,6 +1044,31 @@ function PricingPage() {
     trackEvent('pricing_quote_click', { org_type: orgType, button_location: 'quote_form', page_path: window.location.pathname })
     window.location.href = `mailto:contact@homezai.com?subject=${encodeURIComponent(`Homezai Pricing Quote Request: ${orgName}`)}&body=${encodeURIComponent(body)}`
   }
+  // Plan names, prices and features match the in-app plan picker
+  // (homezyai PlanSection.tsx). Premium is the default per Brian, 2026-11-24.
+  const agentPlans = [
+    {
+      key: 'premium_agent',
+      name: 'Premium Agent',
+      audience: 'Use the app, test things out and promote one of your listings.',
+      price: '$0',
+      billing: 'Free to use.',
+      tag: 'Start here',
+      featured: true,
+      cta: 'Try Now',
+      features: ['Showing scheduling', '1 agent', 'AI assistant', 'Social media lead capture', 'Online support and knowledge base'],
+    },
+    {
+      key: 'pro_agent',
+      name: 'Pro Agent',
+      audience: 'For agents who want more showings and leads.',
+      price: '$8',
+      billing: 'Billed annually at $96/year. Upgrade inside the app.',
+      featured: false,
+      cta: 'Get Started',
+      features: ['Showing scheduling', '1 agent', 'AI voice assistant', 'Social, open house and website lead capture', 'Priority online support'],
+    },
+  ]
   const brokerageFeatures = [
     { title: "Unlimited Showings", desc: "Schedule and manage unlimited property showings with no restrictions." },
     { title: "AI-Powered Scheduling", desc: "Intelligent appointment scheduling that optimizes routes automatically." },
@@ -1072,14 +1101,44 @@ function PricingPage() {
     <div className="pricing-page">
       <section className="pricing-hero">
         <div className="section-container">
-          <span className="hero-badge">Enterprise Pricing</span>
-          <h1 className="section-title">Plans and Pricing</h1>
-          <p className="section-subtitle">Subscription plans and pricing designed for real estate organizations to support teams and agents success via their MLSs, Associations and Brokerages.</p>
+          <span className="hero-badge">Plans and Pricing</span>
+          <h1 className="section-title">Simple pricing for every agent</h1>
+          <p className="section-subtitle">Start free with Premium Agent, move to Pro Agent when you are ready, or get custom pricing for your brokerage, MLS or association.</p>
+        </div>
+      </section>
+
+      <section className="agent-plans" aria-labelledby="agent-plans-title">
+        <div className="section-container">
+          <h2 id="agent-plans-title" className="visually-hidden">Plans for agents</h2>
+          <div className="agent-plans-grid">
+            {agentPlans.map((plan) => (
+              <div className={`agent-plan-card${plan.featured ? ' agent-plan-card-featured' : ''}`} key={plan.name}>
+                {plan.tag && <span className="agent-plan-tag">{plan.tag}</span>}
+                <h3>{plan.name}</h3>
+                <p className="agent-plan-audience">{plan.audience}</p>
+                <div className="agent-plan-price">
+                  <span className="agent-plan-amount">{plan.price}</span>
+                  <span className="agent-plan-period">/month</span>
+                </div>
+                <p className="agent-plan-billing">{plan.billing}</p>
+                <ul className="agent-plan-features">
+                  {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
+                </ul>
+                <Link to="/try-now" className={`btn btn-full ${plan.featured ? 'btn-primary' : 'btn-outline'}`}
+                  onClick={() => trackEvent('try_now_click', { button_location: 'pricing_agent_plan', plan: plan.key, page_path: window.location.pathname })}>
+                  {plan.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+          <p className="agent-plans-note">Brokerage, MLS or association? See custom pricing below.</p>
         </div>
       </section>
 
       <section className="pricing-plans">
         <div className="section-container">
+          <h2 className="section-title">For brokerages, MLSs and associations</h2>
+          <p className="section-subtitle">Custom pricing based on your active producing agents, with your branding and integrations.</p>
           <div className="plans-grid">
             <div className="plan-card">
               <h2>Brokerage Plan</h2>
@@ -1213,6 +1272,102 @@ function PricingPage() {
           <div className="cta-actions">
             <a href="#quote-form" className="btn btn-white">Get Pricing Quote ✓</a>
             <Link to="/contact" className="btn btn-outline-light">Schedule a Demo</Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+/* ===== Try Now Page ===== */
+/*
+ * Roster-first entry. Agents whose brokerage or MLS already set up their account
+ * activate it in the app; everyone else requests access through the app waitlist.
+ * The login itself is only ever created inside app.homezai.com, so this page has
+ * no email or password fields of its own.
+ */
+const APP_URL = 'https://app.homezai.com'
+
+const GETTING_STARTED_STEPS = [
+  { title: 'Activate your login', desc: 'Sign in to the Homezai app with your roster email, or request access if you are new.' },
+  { title: 'Select your listing', desc: 'Pick the listing you want to promote. Premium Agent includes one listing.' },
+  { title: 'Set your showing settings', desc: 'Add your availability and showing preferences so buyers only see times that work for you.' },
+  { title: 'Schedule showings from social', desc: 'Share your booking link on social media. Buyers request a time and Homezai handles the scheduling.' },
+  { title: 'Upgrade when you are ready', desc: 'Move to Pro Agent for the AI voice assistant plus open house and website lead capture.' },
+]
+
+function TryNowPage() {
+  useEffect(() => { document.title = 'Try Homezai - Homezai' }, [])
+  const trackApp = (ctaLabel) => () => trackEvent('try_now_app_click', { cta_label: ctaLabel, page_path: window.location.pathname })
+  return (
+    <div className="try-page">
+      <section className="try-hero">
+        <div className="section-container">
+          <span className="hero-badge">Premium Agent is $0/month</span>
+          <h1 className="section-title">Start scheduling showings with Homezai</h1>
+          <p className="section-subtitle">Activate the account your brokerage or MLS set up for you, or request access if you are new. Your login is created and kept in the secure Homezai app.</p>
+        </div>
+      </section>
+
+      <section className="try-paths">
+        <div className="section-container">
+          <div className="try-paths-grid">
+            <div className="try-path-card try-path-card-primary">
+              <span className="try-path-eyebrow">Already on a roster</span>
+              <h2>Activate your account</h2>
+              <p>If your brokerage, MLS or association works with Homezai, your account may already be waiting for you.</p>
+              <ol className="try-path-steps">
+                <li>Open the Homezai app and choose <strong>Log In</strong>.</li>
+                <li>Use the email address your brokerage or MLS has on file for you.</li>
+                <li>Never set a password? Choose <strong>Forgot password</strong> to get a link to set one.</li>
+              </ol>
+              <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-full" onClick={trackApp('Activate my account')}>
+                Activate my account <span className="arrow">→</span>
+              </a>
+              <p className="try-path-note">Already active? The same button signs you in.</p>
+            </div>
+            <div className="try-path-card">
+              <span className="try-path-eyebrow">New to Homezai</span>
+              <h2>Request access</h2>
+              <p>Not on a roster yet, or your email was not found? Request access and the Homezai team will help you get set up.</p>
+              <ol className="try-path-steps">
+                <li>Open the Homezai app and choose <strong>Join Waitlist</strong>.</li>
+                <li>Enter your name, email, city and role.</li>
+                <li>The Homezai team reviews each request and follows up with next steps.</li>
+              </ol>
+              <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-full" onClick={trackApp('Request access')}>
+                Request access <span className="arrow">→</span>
+              </a>
+              <p className="try-path-note">Questions first? <Link to="/contact">Contact our team</Link>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="try-steps">
+        <div className="section-container">
+          <h2 className="section-title">Getting started in five steps</h2>
+          <p className="section-subtitle">What to expect once you are in the app.</p>
+          <ol className="try-steps-list">
+            {GETTING_STARTED_STEPS.map((step, i) => (
+              <li className="try-step" key={step.title}>
+                <span className="try-step-number" aria-hidden="true">{i + 1}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="pricing-bottom-cta">
+        <div className="section-container">
+          <h2 className="section-title light">Compare Premium and Pro</h2>
+          <p className="section-subtitle light">Premium Agent is $0/month. Pro Agent is $8/month, billed annually at $96/year.</p>
+          <div className="cta-actions">
+            <Link to="/pricing" className="btn btn-white">See plans and pricing</Link>
           </div>
         </div>
       </section>
@@ -1366,6 +1521,7 @@ function App() {
         <Route path="/support" element={<Navigate to="/" replace />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/try-now" element={<TryNowPage />} />
         <Route path="/integrations" element={<IntegrationsPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />

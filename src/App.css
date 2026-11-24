@@ -640,6 +640,8 @@ body {
 .cta-actions {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 /* ===== Footer ===== */
@@ -2256,4 +2258,323 @@ body {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ===== Shared: visually hidden heading ===== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== Pricing: agent plans ===== */
+.agent-plans {
+  padding: 8px 0 40px;
+}
+
+.agent-plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.agent-plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px 32px;
+}
+
+.agent-plan-card-featured {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-xl);
+}
+
+.agent-plan-tag {
+  position: absolute;
+  top: -13px;
+  left: 32px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.agent-plan-card h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: 4px;
+}
+
+.agent-plan-audience {
+  font-size: 0.95rem;
+  color: var(--text-body);
+  line-height: 1.5;
+  min-height: 3em;
+}
+
+.agent-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.agent-plan-amount {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-heading);
+  line-height: 1;
+}
+
+.agent-plan-period {
+  font-size: 1rem;
+  color: var(--text-body);
+}
+
+.agent-plan-billing {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 8px 0 24px;
+}
+
+.agent-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  flex: 1;
+}
+
+.agent-plan-features li {
+  position: relative;
+  padding: 10px 0 10px 28px;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.95rem;
+  color: var(--text-heading);
+}
+
+.agent-plan-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 4px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.agent-plan-card .btn {
+  justify-content: center;
+}
+
+.agent-plans-note {
+  text-align: center;
+  color: var(--text-body);
+  font-size: 0.95rem;
+  margin-top: 32px;
+}
+
+/* ===== Try Now Page ===== */
+.try-page {
+  min-height: 60vh;
+}
+
+.try-hero {
+  padding: 80px 0 24px;
+  background: linear-gradient(180deg, var(--primary-50) 0%, var(--white) 100%);
+  text-align: center;
+}
+
+.try-hero .section-subtitle {
+  margin-bottom: 24px;
+}
+
+.try-paths {
+  padding: 24px 0 80px;
+}
+
+.try-paths-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.try-path-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px 28px;
+}
+
+.try-path-card-primary {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-xl);
+}
+
+.try-path-eyebrow {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.try-path-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: 8px;
+}
+
+.try-path-card > p {
+  color: var(--text-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.try-path-steps {
+  margin: 20px 0 28px;
+  padding-left: 20px;
+  flex: 1;
+}
+
+.try-path-steps li {
+  color: var(--text-heading);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 6px 0 6px 4px;
+}
+
+.try-path-steps li::marker {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.try-path-card .btn {
+  justify-content: center;
+}
+
+.try-path-card .try-path-note {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.try-path-note a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.try-steps {
+  padding: 80px 0;
+  background: var(--gray-50);
+}
+
+.try-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 760px;
+  display: grid;
+  gap: 16px;
+}
+
+.try-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+}
+
+.try-step-number {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  color: var(--primary);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.try-step h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 2px;
+}
+
+.try-step p {
+  font-size: 0.95rem;
+  color: var(--text-body);
+  line-height: 1.55;
+}
+
+@media (max-width: 1024px) {
+  .agent-plans-grid,
+  .try-paths-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+
+  .agent-plans-grid {
+    gap: 40px;
+  }
+
+  .agent-plan-audience {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .try-hero {
+    padding: 56px 0 16px;
+  }
+
+  .try-path-card,
+  .agent-plan-card {
+    padding: 32px 22px 24px;
+  }
+
+  .agent-plan-tag {
+    left: 22px;
+  }
+
+  .try-steps {
+    padding: 56px 0;
+  }
+
+  .try-step {
+    gap: 14px;
+    padding: 16px 18px;
+  }
+}
+
+.pricing-hero .section-title,
+.try-hero .section-title {
+  text-wrap: balance;
 }

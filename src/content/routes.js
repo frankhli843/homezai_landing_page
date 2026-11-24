@@ -16,6 +16,7 @@ export const STATIC_ROUTES = Object.freeze([
   '/',
   '/blog/',
   '/pricing/',
+  '/try-now/',
   '/integrations/',
   '/contact/',
   '/terms/',
@@ -28,11 +29,18 @@ export const STATIC_ROUTES = Object.freeze([
  * URLs that still have to answer, but are not pages any more. The support page was
  * folded into the home page, and a link to it exists in the wild, so it is emitted as
  * a redirect document rather than left to fall through to the 404.
+ *
+ * The two legal paths are the ones the app's signup screens linked to before the
+ * legal pages moved to /terms/ and /privacy/. Both answered 404 on 2026-11-24.
  */
-export const PERMANENT_REDIRECTS = Object.freeze([{ from: '/support/', to: '/' }])
+export const PERMANENT_REDIRECTS = Object.freeze([
+  { from: '/support/', to: '/' },
+  { from: '/terms-conditions/', to: '/terms/' },
+  { from: '/privacy-policy/', to: '/privacy/' },
+])
 
 /** Routes that exist but should never be advertised in the sitemap. */
-export const UNLISTED_ROUTES = Object.freeze(['/support/'])
+export const UNLISTED_ROUTES = Object.freeze(['/support/', '/terms-conditions/', '/privacy-policy/'])
 
 /** The file a canonical path is written to, relative to the build output directory. */
 export function outputFileForPath(path) {

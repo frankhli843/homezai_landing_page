@@ -44,7 +44,12 @@ const STATIC_META = {
   '/pricing/': {
     title: 'Plans and Pricing',
     description:
-      'Subscription plans and pricing for MLSs, associations and brokerages using Homezai to manage property showings.',
+      'Premium Agent at $0/month, Pro Agent at $8/month billed annually, and custom pricing for brokerages, MLSs and associations.',
+  },
+  '/try-now/': {
+    title: 'Try Homezai',
+    description:
+      'Activate the Homezai account your brokerage or MLS set up for you, or request access. Premium Agent is $0/month.',
   },
   '/integrations/': {
     title: 'Integrations',

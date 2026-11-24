@@ -60,7 +60,7 @@ function redirectDocument(from, to) {
     <meta http-equiv="refresh" content="0; url=${target}">
   </head>
   <body>
-    <p>This article has moved to <a href="${target}">${target}</a>.</p>
+    <p>This page has moved to <a href="${target}">${target}</a>.</p>
   </body>
 </html>
 `
