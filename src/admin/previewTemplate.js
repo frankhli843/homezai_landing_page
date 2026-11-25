@@ -324,7 +324,7 @@ export function buildPreviewHtml(fields) {
         <article class="article">
           <header class="article-header">
             <div class="article-container">
-              <p class="article-eyebrow">Blog</p>
+              <p class="article-eyebrow">News</p>
               <h1>${safeTitle}</h1>
               <p class="article-meta">
                 <span>${escapeHtml(author || 'Homezai Team')}</span>

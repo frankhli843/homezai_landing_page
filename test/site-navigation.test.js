@@ -4,51 +4,71 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import test from 'node:test'
 
+import { APP_URL, LEGAL_LINKS, NAV_GROUPS } from '../src/site/navigation.js'
+
 /*
- * Frank, 2026-10-02 (email thread 1a0fc5c4691ce5ee): "Lets remove Blog from the
- * header but keep it on the footer as well". The blog stays reachable from every
- * page through the footer, and from each article's own "Blog" eyebrow link.
+ * The navigation follows Brian's Figma redesign (email 2026-11-24, "the navigation
+ * menu is different, please look at the Figma design files"): three menus, About Us,
+ * Pricing and Partners, then LOG IN and TRY NOW. The blog is presented as Stories
+ * inside About Us. This replaces the 2026-10-02 rule that kept a top level Blog link
+ * out of the old header; the blog is still a second level link, not a top level item.
+ *
+ * The header, the mobile menu and the footer all render from src/site/navigation.js,
+ * so these tests check that one table and the built page.
  */
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const appSource = readFileSync(path.join(repoRoot, 'src', 'App.jsx'), 'utf8')
 
-function componentSource(name) {
-  const start = appSource.indexOf(`function ${name}(`)
-  assert.ok(start >= 0, `${name} is not defined in src/App.jsx`)
-  const next = appSource.indexOf('\nfunction ', start + 1)
-  return appSource.slice(start, next === -1 ? undefined : next)
-}
-
-const linkTargets = (source) => [...source.matchAll(/<Link to="([^"]+)"[^>]*>([^<]*)<\/Link>/g)].map((m) => ({ to: m[1], text: m[2].trim() }))
-
-test('the header navigation does not link to the blog', () => {
-  const links = linkTargets(componentSource('Navbar'))
-  assert.ok(links.length >= 5, 'the header should still carry its other links')
+test('the top level menus are the three the design shows, in order', () => {
   assert.deepEqual(
-    links.filter(({ to, text }) => to.startsWith('/blog') || /^blog$/i.test(text)),
+    NAV_GROUPS.map((group) => [group.label, group.to]),
+    [
+      ['About Us', '/about'],
+      ['Pricing', '/pricing'],
+      ['Partners', '/partners/mls'],
+    ],
+  )
+})
+
+test('each menu carries the design items, in order', () => {
+  const items = Object.fromEntries(NAV_GROUPS.map((group) => [group.label, group.items.map((item) => `${item.label} ${item.to}`)]))
+  assert.deepEqual(items['About Us'], ['Mission /about#our-mission', 'Stories /blog', 'News /news', 'Contact /contact'])
+  assert.deepEqual(items.Pricing, [
+    'Pricing Tiers /pricing#pricing-tiers',
+    'Onboarding /pricing#onboarding',
+    'Features /pricing#features',
+    'FAQ /pricing#pricing-faq',
+  ])
+  assert.deepEqual(items.Partners, ['MLS /partners/mls', 'Brokerages /partners/brokerages', 'Integrations /integrations'])
+})
+
+test('no top level menu is the blog', () => {
+  assert.deepEqual(
+    NAV_GROUPS.filter((group) => group.to.startsWith('/blog') || /^(blog|stories)$/i.test(group.label)),
     [],
   )
 })
 
-test('the footer still links to the blog', () => {
-  const links = linkTargets(componentSource('Footer'))
-  assert.ok(
-    links.some(({ to, text }) => to === '/blog/' && text === 'Blog'),
-    'the footer must keep its Blog link to /blog/',
+test('LOG IN goes to the app and the legal links stay in the footer', () => {
+  assert.equal(APP_URL, 'https://app.homezai.com/')
+  assert.deepEqual(
+    LEGAL_LINKS.map((link) => link.to),
+    ['/privacy', '/terms', '/dpa', '/accessibility'],
   )
 })
 
 /*
  * The prerendered pages are what visitors and crawlers receive before any script
- * runs, so the same rule is checked against the built HTML when a build exists.
+ * runs, so the same structure is checked against the built HTML when a build exists.
  */
 const builtHome = path.join(repoRoot, 'dist', 'index.html')
-test('the built home page has Blog in the footer and not in the header', { skip: !existsSync(builtHome) && 'no build in dist/' }, () => {
+test('the built home page carries the new header and footer navigation', { skip: !existsSync(builtHome) && 'no build in dist/' }, () => {
   const html = readFileSync(builtHome, 'utf8')
-  const nav = html.match(/<nav class="navbar">[\s\S]*?<\/nav>/)
-  const footer = html.match(/<footer class="footer">[\s\S]*?<\/footer>/)
+  const nav = html.match(/<nav class="hidden items-center gap-6 md:flex" aria-label="Main navigation">[\s\S]*?<\/nav>/)
+  const footer = html.match(/<footer[\s\S]*?<\/footer>/)
   assert.ok(nav && footer, 'the built page must contain the shared header and footer')
-  assert.doesNotMatch(nav[0], /href="\/blog\/?"/)
-  assert.match(footer[0], /<a href="\/blog\/"[^>]*>Blog<\/a>/)
+  for (const label of ['About Us', 'Pricing', 'Partners', 'LOG IN', 'TRY NOW']) assert.match(nav[0], new RegExp(`>${label}<`))
+  assert.match(nav[0], /href="\/blog"[^>]*>Stories<\/a>/)
+  assert.match(footer[0], /href="\/blog"[^>]*>Stories<\/a>/)
+  assert.match(footer[0], /href="\/privacy"[^>]*>Privacy Policy<\/a>/)
 })
