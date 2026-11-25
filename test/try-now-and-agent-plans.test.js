@@ -74,3 +74,15 @@ test('the build emits /try-now/ and both legal redirect documents', { skip: !exi
   assert.match(sitemap, /https:\/\/homezai\.com\/try-now\//)
   assert.doesNotMatch(sitemap, /terms-conditions|privacy-policy/)
 })
+
+
+test('free Premium is the default plan and paid Pro remains optional in the rendered pricing page', { skip: !existsSync(path.join(dist, 'pricing', 'index.html')) && 'no pricing build' }, () => {
+  const html = readFileSync(path.join(dist, 'pricing', 'index.html'), 'utf8')
+  const cards = [...html.matchAll(/<article\b[^>]*>[\s\S]*?<\/article>/g)].map((match) => match[0])
+  const premium = cards.find((card) => />Premium Agent<\/h3>/.test(card))
+  const pro = cards.find((card) => />Pro Agent<\/h3>/.test(card))
+  assert.ok(premium && pro, 'both agent plans must be present')
+  assert.match(premium, /Default plan/)
+  assert.match(pro, /Optional upgrade/)
+  assert.doesNotMatch(pro, /Default plan|Recommended/)
+})
