@@ -188,7 +188,7 @@ export default function PricingPage() {
             <p className="mt-2 text-sm text-slate-600">Pro plans are billed yearly at $96 per paid user.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <article className="flex min-h-[500px] flex-col rounded-2xl border p-5 shadow-sm border-slate-200 bg-white">
+            <article className="flex min-h-[500px] flex-col rounded-2xl border p-5 shadow-sm border-blue-600 bg-blue-50/60 ring-1 ring-blue-600">
               <div className="flex items-center justify-between">
                 <span className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 h-10 w-10 rounded-xl" aria-hidden="true">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-round h-7 w-7 h-5 w-5">
@@ -199,6 +199,7 @@ export default function PricingPage() {
                     <path d="M3 8 1 5M9 5V1M15 8l3-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                   </svg>
                 </span>
+                <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white">Default plan</span>
               </div>
               <h3 className="mt-5 text-lg font-bold">Premium Agent</h3>
               <div className="mt-4 flex items-end gap-1">
@@ -238,7 +239,7 @@ export default function PricingPage() {
                   Online support and knowledge base
                 </li>
               </ul>
-              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
+              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -246,7 +247,7 @@ export default function PricingPage() {
                 </svg>
               </Link>
             </article>
-            <article className="flex min-h-[500px] flex-col rounded-2xl border p-5 shadow-sm border-blue-600 bg-blue-50/60 ring-1 ring-blue-600">
+            <article className="flex min-h-[500px] flex-col rounded-2xl border p-5 shadow-sm border-slate-200 bg-white">
               <div className="flex items-center justify-between">
                 <span className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 h-10 w-10 rounded-xl" aria-hidden="true">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles h-7 w-7 h-5 w-5">
@@ -260,7 +261,7 @@ export default function PricingPage() {
                     <path d="M3 8 1 5M9 5V1M15 8l3-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                   </svg>
                 </span>
-                <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-bold text-white">Recommended</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">Optional upgrade</span>
               </div>
               <h3 className="mt-5 text-lg font-bold">Pro Agent</h3>
               <div className="mt-4 flex items-end gap-1">
@@ -301,7 +302,7 @@ export default function PricingPage() {
                   Priority service and support
                 </li>
               </ul>
-              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
+              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
