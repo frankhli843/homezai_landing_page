@@ -1,0 +1,18 @@
+.try-now-step-selector {
+  display: flex;
+  min-width: 44px;
+  min-height: 44px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 0;
+  border-radius: 6px;
+}
+
+.try-now-step-selector > span {
+  width: 100%;
+}
+
+.try-now-step-selector:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 4px;
+}
