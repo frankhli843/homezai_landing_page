@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { Link } from 'react-router-dom'
 
 import { integrationCategories } from '../../integrationsData.js'
@@ -143,10 +144,10 @@ export default function IntegrationsPage() {
             Our team can work with you to build custom integrations tailored to your specific needs.
           </p>
           <div className="mt-9 flex flex-col justify-center sm:flex-row">
-            <Link to="/try-now" className="rounded-t-md bg-white px-7 py-3 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 sm:rounded-l-md sm:rounded-tr-none">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'integrations_cta')} className="rounded-t-md bg-white px-7 py-3 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 sm:rounded-l-md sm:rounded-tr-none">
               Try Now
             </Link>
-            <a href="mailto:Info@Homezai.com" className="rounded-b-md border border-white/70 px-7 py-3 text-[11px] font-semibold text-white transition-colors hover:bg-white/10 sm:rounded-r-md sm:rounded-bl-none">
+            <a href="mailto:Info@Homezai.com" onClick={() => trackCtaClick('contact_click', 'integrations_cta')} className="rounded-b-md border border-white/70 px-7 py-3 text-[11px] font-semibold text-white transition-colors hover:bg-white/10 sm:rounded-r-md sm:rounded-bl-none">
               Contact Sales
             </a>
           </div>

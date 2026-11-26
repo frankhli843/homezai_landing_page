@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../analytics'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -65,10 +66,10 @@ export default function Header() {
             </div>
           ))}
           <div className="ml-2 flex items-center gap-2">
-            <a href={APP_URL} className="rounded-lg border border-blue-200 bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 transition-colors hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+            <a href={APP_URL} onClick={() => trackCtaClick('app_login_click', 'navbar')} className="rounded-lg border border-blue-200 bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 transition-colors hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
               LOG IN
             </a>
-            <Link to="/try-now" className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'navbar')} className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
               TRY NOW
             </Link>
           </div>
@@ -105,10 +106,10 @@ export default function Header() {
               </div>
             </div>
           ))}
-          <a href={APP_URL} className="mt-5 block rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-center text-sm font-semibold text-blue-700 hover:border-blue-300 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <a href={APP_URL} onClick={() => trackCtaClick('app_login_click', 'navbar')} className="mt-5 block rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-center text-sm font-semibold text-blue-700 hover:border-blue-300 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600">
             LOG IN
           </a>
-          <Link to="/try-now" className="mt-2 block rounded-lg bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+          <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'navbar')} className="mt-2 block rounded-lg bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
             TRY NOW
           </Link>
         </nav>

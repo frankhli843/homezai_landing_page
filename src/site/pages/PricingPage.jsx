@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -54,7 +55,7 @@ export default function PricingPage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">Find the Homezai plan that fits your business.</p>
             <div className="mt-9 flex items-center justify-center">
-              <Link to="/try-now" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 sm:w-auto">
+              <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'hero')} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 sm:w-auto">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -239,7 +240,7 @@ export default function PricingPage() {
                   Online support and knowledge base
                 </li>
               </ul>
-              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
+              <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'premium_plan')} className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -302,7 +303,7 @@ export default function PricingPage() {
                   Priority service and support
                 </li>
               </ul>
-              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
+              <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'pro_plan')} className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -394,7 +395,7 @@ export default function PricingPage() {
                 </li>
               </ul>
               <p className="mt-5 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-500">{teamUsers} paid users · ${PRO_MONTHLY_PER_USER} per user/month</p>
-              <Link to="/try-now" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
+              <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'team_plan')} className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
                 Try Now
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -456,7 +457,7 @@ export default function PricingPage() {
                   Custom contracts
                 </li>
               </ul>
-              <Link to="/partners/brokerages" className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
+              <Link to="/partners/brokerages" onClick={() => trackCtaClick('enterprise_cta_click', 'pricing_card')} className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold border border-blue-600 text-blue-700 hover:bg-blue-50">
                 Explore Partnership
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -585,7 +586,7 @@ export default function PricingPage() {
                 <p className="mt-1 text-sm leading-6 text-slate-600">Explore custom integrations and enterprise partnership options.</p>
               </div>
             </div>
-            <Link to="/partners/brokerages" className="inline-flex shrink-0 items-center gap-2 font-bold text-blue-700 hover:text-blue-800">
+            <Link to="/partners/brokerages" onClick={() => trackCtaClick('enterprise_cta_click', 'features_section')} className="inline-flex shrink-0 items-center gap-2 font-bold text-blue-700 hover:text-blue-800">
               Explore Partnership
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                 <path d="M5 12h14" />
@@ -731,7 +732,7 @@ export default function PricingPage() {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-blue-100">
             Choose the plan that fits your business and begin with the listing you want to activate first.
           </p>
-          <Link to="/try-now" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-semibold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
+          <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'cta_section')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-semibold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
             Try Now
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
               <path d="M5 12h14" />

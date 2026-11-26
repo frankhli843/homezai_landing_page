@@ -27,3 +27,8 @@ export function trackEvent(eventName, params) {
   if (typeof window.gtag !== 'function') return
   window.gtag('event', eventName, params || {})
 }
+
+// Call only with fixed action and placement identifiers, never form values or URLs.
+export function trackCtaClick(eventName, buttonLocation) {
+  trackEvent(eventName, { button_location: buttonLocation, page_path: window.location.pathname })
+}

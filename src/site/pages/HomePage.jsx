@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { Link } from 'react-router-dom'
 
 export default function HomePage() {
@@ -23,7 +24,7 @@ export default function HomePage() {
             <img src="/images/site/social-to-showings-person.png" alt="Real estate professional working at a laptop" className="h-auto w-full" />
           </div>
           <div className="mt-4 sm:mt-8">
-            <Link to="/try-now" className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#0F76EC] px-8 py-4 text-lg font-bold text-white shadow-md shadow-blue-600/20 transition-all hover:bg-[#0C3D8A] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#0F76EC] focus:ring-offset-2">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'hero')} className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#0F76EC] px-8 py-4 text-lg font-bold text-white shadow-md shadow-blue-600/20 transition-all hover:bg-[#0C3D8A] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#0F76EC] focus:ring-offset-2">
               Try Homezai
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
                 <path d="M5 12h14" />
@@ -122,7 +123,7 @@ export default function HomePage() {
             </li>
           </ol>
           <div className="mt-12 text-center">
-            <Link to="/try-now" className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'how_it_works')} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
               TRY NOW — YOUR FIRST LISTING IS AT NO COST
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                 <path d="M5 12h14" />
@@ -286,7 +287,7 @@ export default function HomePage() {
             <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-5xl">Less Busywork. More Business.</h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">Your showing activity, buyer engagement, and next steps: all in one intelligent workflow.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <Link to="/try-now" className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3.5 font-bold text-white hover:bg-blue-500">
+              <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'cta_section')} className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3.5 font-bold text-white hover:bg-blue-500">
                 TRY NOW
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-4 w-4" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -323,7 +324,7 @@ export default function HomePage() {
             <span className="block">See how Homezai can help you connect your listings</span>
             <span className="block">to showing requests and buyer engagement.</span>
           </p>
-          <Link to="/try-now" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-bold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md">
+          <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'closing_cta')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-bold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md">
             TRY NOW
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
               <path d="M5 12h14" />

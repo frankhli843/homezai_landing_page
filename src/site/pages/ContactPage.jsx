@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { useEffect } from 'react'
 
 const HUBSPOT_EMBED = 'https://js-na2.hsforms.net/forms/embed/245865428.js'
@@ -44,7 +45,7 @@ export default function ContactPage() {
                 <div>
                   <dt className="text-sm font-bold text-slate-950">Email</dt>
                   <dd className="mt-1 text-sm leading-6 text-slate-600">
-                    <a className="transition hover:text-blue-700" href="mailto:info@homezai.com">info@homezai.com</a>
+                    <a className="transition hover:text-blue-700" href="mailto:info@homezai.com" onClick={() => trackCtaClick('contact_click', 'contact_email')}>info@homezai.com</a>
                   </dd>
                 </div>
               </div>
@@ -57,7 +58,7 @@ export default function ContactPage() {
                 <div>
                   <dt className="text-sm font-bold text-slate-950">Phone</dt>
                   <dd className="mt-1 text-sm leading-6 text-slate-600">
-                    <a className="transition hover:text-blue-700" href="tel:+15024340605">1-502-434-0605</a>
+                    <a className="transition hover:text-blue-700" href="tel:+15024340605" onClick={() => trackCtaClick('contact_click', 'contact_phone')}>1-502-434-0605</a>
                   </dd>
                 </div>
               </div>
