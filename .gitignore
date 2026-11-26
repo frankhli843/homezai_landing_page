@@ -16,3 +16,7 @@ public/admin/revisions.js
 # Built from src/admin/ by vite.admin.config.js, so the preview the editor runs can
 # never disagree with the source it came from or the tests that cover it.
 public/admin/preview.js
+
+# Browser regression artifacts
+playwright-report/
+test-results/

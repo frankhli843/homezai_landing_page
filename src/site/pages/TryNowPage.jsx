@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { trackEvent } from '../../analytics'
 import { APP_URL } from '../navigation.js'
 
+import './TryNowPage.css'
+
 /*
  * TRY NOW follows the roster-first journey. Agents whose brokerage, MLS or association
  * already works with Homezai activate the account that is waiting for them; everyone
@@ -152,14 +154,14 @@ export default function TryNowPage() {
           <ol className="grid grid-cols-5 gap-2" aria-label={`Step ${active + 1} of ${STEPS.length}`}>
             {STEPS.map((item, index) => (
               <li key={item.label}>
-                <button type="button" className="block w-full text-left" onClick={() => setActive(index)} aria-current={index === active ? 'step' : undefined}>
+                <button type="button" className="try-now-step-selector w-full text-left" aria-label={`Step ${index + 1} of ${STEPS.length}: ${item.label}`} aria-controls="try-now-step-panel" onClick={() => setActive(index)} aria-current={index === active ? 'step' : undefined}>
                   <span className={`block h-2 rounded-full ${index <= active ? 'bg-blue-600' : 'bg-slate-200'}`} />
                   <span className={`mt-2 hidden text-center text-[10px] font-bold sm:block ${index <= active ? 'text-blue-700' : 'text-slate-400'}`}>{item.label}</span>
                 </button>
               </li>
             ))}
           </ol>
-          <section className="mt-7 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5" aria-live="polite">
+          <section id="try-now-step-panel" className="mt-7 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5" aria-live="polite">
             <div className="border-b border-slate-200 bg-slate-950 px-6 py-5 text-white sm:px-9">
               <p className="text-xs font-bold uppercase tracking-widest text-blue-300">
                 Step {active + 1} of {STEPS.length}

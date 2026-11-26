@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "node --test test/*.test.js",
     "build:content": "node scripts/build-content.mjs",
-    "publish-sync": "node scripts/publish-sync.mjs"
+    "publish-sync": "node scripts/publish-sync.mjs",
+    "test:browser": "playwright test --config test/browser.config.js"
   },
   "dependencies": {
     "react": "^19.2.4",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.65.1",
     "@sveltia/cms": "^0.205.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
