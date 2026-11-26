@@ -6,6 +6,7 @@ import './App.css'
 import { trackPageView } from './analytics'
 import { ArticlePage, NotFoundPage } from './Blog.jsx'
 import { metaForRoute } from './content/seo.js'
+import { legacyRedirectFor } from './site/legacyRedirects.js'
 import Header from './site/Header.jsx'
 import Footer from './site/Footer.jsx'
 import HomeSections from './site/pages/HomePage.jsx'
@@ -17,7 +18,6 @@ import PartnersMlsSections from './site/pages/PartnersMlsPage.jsx'
 import PartnersBrokeragesSections from './site/pages/PartnersBrokeragesPage.jsx'
 import IntegrationsSections from './site/pages/IntegrationsPage.jsx'
 import NewsSections from './site/pages/NewsPage.jsx'
-import StoriesSections from './site/pages/StoriesPage.jsx'
 import ContactSections from './site/pages/ContactPage.jsx'
 import TermsSections from './site/pages/TermsPage.jsx'
 import PrivacySections from './site/pages/PrivacyPage.jsx'
@@ -103,11 +103,6 @@ function NewsPage() {
   return <NewsSections />
 }
 
-function StoriesPage() {
-  useEffect(() => { document.title = metaForRoute('/blog/').title }, [])
-  return <StoriesSections />
-}
-
 function ContactPage() {
   useEffect(() => { document.title = metaForRoute('/contact/').title }, [])
   return <ContactSections />
@@ -135,6 +130,13 @@ function AccessibilityPage() {
 
 /* ===== App Root ===== */
 function App() {
+  const location = useLocation()
+  const redirect = legacyRedirectFor(location)
+  useEffect(() => {
+    // Replace the obsolete entry and load the destination's own canonical document.
+    if (redirect) window.location.replace(redirect)
+  }, [redirect])
+  if (redirect) return <p>This page has moved to <a href={redirect}>a new address</a>.</p>
   return (
     <div className="min-h-screen bg-white text-slate-950">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-white">
@@ -153,7 +155,6 @@ function App() {
         <Route path="/partners/brokerages" element={<PartnersBrokeragesPage />} />
         <Route path="/integrations" element={<IntegrationsPage />} />
         <Route path="/news" element={<NewsPage />} />
-        <Route path="/blog" element={<StoriesPage />} />
         <Route path="/blog/:slug" element={<ArticlePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />

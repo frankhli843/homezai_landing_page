@@ -171,7 +171,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+      <section id="features" className="scroll-mt-24 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.62fr_0.38fr] lg:items-center">
             <div>

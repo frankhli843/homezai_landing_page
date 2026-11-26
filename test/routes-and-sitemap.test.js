@@ -34,8 +34,12 @@ describe('the route manifest covers every reachable url', () => {
     }
   })
 
-  test('the blog index is a prerendered route', () => {
-    assert.ok(STATIC_ROUTES.includes('/blog/'))
+  test('the blog index redirects to News and is not also emitted as a page', () => {
+    assert.ok(!STATIC_ROUTES.includes('/blog/'))
+    const entries = routeManifest().filter((r) => r.path === '/blog/')
+    assert.equal(entries.length, 1)
+    assert.equal(entries[0].kind, 'redirect')
+    assert.equal(entries[0].target, '/news/')
   })
 
   test('every published post gets its own route', () => {
@@ -94,8 +98,9 @@ describe('the sitemap lists published content and nothing else', () => {
     for (const loc of locs) assert.match(loc, /^https:\/\/homezai\.com\//)
   })
 
-  test('the blog index and each published article are listed', () => {
-    assert.match(xml, /<loc>https:\/\/homezai\.com\/blog\/<\/loc>/)
+  test('News and each retained article are listed, while the redirected index is omitted', () => {
+    assert.doesNotMatch(xml, /<loc>https:\/\/homezai\.com\/blog\/<\/loc>/)
+    assert.match(xml, /<loc>https:\/\/homezai\.com\/news\/<\/loc>/)
     assert.match(xml, /<loc>https:\/\/homezai\.com\/blog\/first-post\/<\/loc>/)
     assert.match(xml, /<loc>https:\/\/homezai\.com\/blog\/second-post\/<\/loc>/)
   })
@@ -116,7 +121,7 @@ describe('the sitemap lists published content and nothing else', () => {
     const empty = buildSitemap({ posts: [], redirects: [] })
     assert.match(empty, /<urlset/)
     assert.match(empty, /<loc>https:\/\/homezai\.com\/<\/loc>/)
-    assert.match(empty, /<loc>https:\/\/homezai\.com\/blog\/<\/loc>/)
+    assert.match(empty, /<loc>https:\/\/homezai\.com\/news\/<\/loc>/)
     assert.doesNotMatch(empty, /\/blog\/[a-z]/)
   })
 

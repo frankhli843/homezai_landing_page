@@ -1,7 +1,7 @@
 /*
  * The site navigation, shared by the desktop menu, the mobile menu and the footer so
  * the three can never disagree. Structure and labels follow Brian's Figma design
- * (About Us, Pricing, Partners). Stories is the /blog/ page.
+ * (About Us, Pricing, Partners). Stories follows the legacy blog index to News.
  */
 
 export const APP_URL = 'https://app.homezai.com/'
@@ -12,7 +12,7 @@ export const NAV_GROUPS = Object.freeze([
     to: '/about',
     items: [
       { label: 'Mission', to: '/about#our-mission' },
-      { label: 'Stories', to: '/blog' },
+      { label: 'Stories', to: '/news' },
       { label: 'News', to: '/news' },
       { label: 'Contact', to: '/contact' },
     ],

@@ -57,7 +57,7 @@ function redirectDocument(from, to) {
     <title>Moved</title>
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="${target}">
-    <meta http-equiv="refresh" content="0; url=${target}">
+    <meta http-equiv="refresh" content="0; url=${escapeAttribute(to)}">
   </head>
   <body>
     <p>This page has moved to <a href="${target}">${target}</a>.</p>

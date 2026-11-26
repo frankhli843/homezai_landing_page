@@ -47,6 +47,15 @@ check(existsSync(join(dist, '404.html')), 'dist/404.html is missing, so an unkno
 check(existsSync(join(dist, 'sitemap.xml')), 'dist/sitemap.xml is missing')
 check(existsSync(join(dist, 'robots.txt')), 'dist/robots.txt is missing')
 
+// Redirect documents must work before the application runs, without duplicate canonicals.
+for (const entry of routeManifest({ posts, redirects }).filter((entry) => entry.kind === 'redirect')) {
+  const file = join(dist, entry.outputFile)
+  if (!existsSync(file)) continue
+  const html = readFileSync(file, 'utf8')
+  check(html.includes(`<meta http-equiv="refresh" content="0; url=${entry.target}">`), `${entry.path} lacks an immediate redirect`)
+  check(html.includes(`<link rel="canonical" href="https://homezai.com${entry.target}">`), `${entry.path} lacks its destination canonical`)
+}
+
 // 2. Crawler visible metadata is in the bytes, on a real page, not applied after mount.
 for (const route of [...STATIC_ROUTES, ...posts.map((p) => `/blog/${p.slug}/`)]) {
   const file = join(dist, route === '/' ? 'index.html' : `${route.replace(/^\/|\/$/g, '')}/index.html`)

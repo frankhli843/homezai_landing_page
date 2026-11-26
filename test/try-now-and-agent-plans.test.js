@@ -67,7 +67,7 @@ test('the build emits /try-now/ and both legal redirect documents', { skip: !exi
   assert.doesNotMatch(tryNow, /type="password"/)
   for (const [from, to] of [['terms-conditions', '/terms/'], ['privacy-policy', '/privacy/']]) {
     const html = readFileSync(path.join(dist, from, 'index.html'), 'utf8')
-    assert.match(html, new RegExp(`<meta http-equiv="refresh" content="0; url=https://homezai\\.com${to}">`))
+    assert.match(html, new RegExp(`<meta http-equiv="refresh" content="0; url=${to}">`))
     assert.match(html, /<meta name="robots" content="noindex, follow">/)
   }
   const sitemap = readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
