@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -24,7 +25,7 @@ export default function PartnersMlsPage() {
               Homezai helps MLSs deliver AI augmented showing coordination as a trusted, integrated member benefit—without giving up control of the brand or data.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link to="/contact" className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+              <Link to="/contact" onClick={() => trackCtaClick('contact_click', 'mls_hero')} className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                 Explore MLS Partnership
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
                   <path d="M5 12h14" />
@@ -298,7 +299,7 @@ spend less time managing disconnected steps.
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
             Tell us about your organization, technology, and goals for the showing experience.
           </p>
-          <a href="mailto:Info@Homezai.com?subject=Homezai%20MLS%20partnership%20inquiry" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+          <a href="mailto:Info@Homezai.com?subject=Homezai%20MLS%20partnership%20inquiry" onClick={() => trackCtaClick('contact_click', 'mls_cta')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
             Partnership Inquiry
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
               <path d="M5 12h14" />

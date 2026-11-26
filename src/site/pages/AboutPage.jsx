@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { Link } from 'react-router-dom'
 
 export default function AboutPage() {
@@ -152,7 +153,7 @@ export default function AboutPage() {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-blue-100">
             Start with your first listing and see how Homezai makes the work around every showing simpler.
           </p>
-          <Link to="/try-now" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-bold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md">
+          <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'cta_section')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-bold text-blue-700 shadow-sm transition-all hover:bg-blue-50 hover:shadow-md">
             TRY NOW
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
               <path d="M5 12h14" />

@@ -36,7 +36,7 @@ test('the Try Now page collects no credentials and hands off to the app', () => 
 
 test('the header CTA is TRY NOW and points at /try-now', () => {
   const header = siteSource('Header.jsx')
-  assert.match(header, /<Link to="\/try-now" className="[^"]*bg-blue-600[^"]*">\s*TRY NOW\s*<\/Link>/)
+  assert.match(header, /<Link to="\/try-now"[^\n]* className="[^"]*bg-blue-600[^"]*">\s*TRY NOW\s*<\/Link>/)
 })
 
 test('pricing shows Premium Agent free and Pro Agent at $8/month billed $96/year', () => {

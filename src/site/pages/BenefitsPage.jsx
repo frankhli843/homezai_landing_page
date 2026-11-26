@@ -1,3 +1,4 @@
+import { trackCtaClick } from '../../analytics'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOMEZAI_WORDMARK } from '../../brand.js'
@@ -50,7 +51,7 @@ export default function BenefitsPage() {
               <strong className="font-bold text-slate-800">no cost per lead</strong>
               .
             </p>
-            <Link to="/try-now" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-bold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'hero')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-bold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
               TRY NOW
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
                 <path d="M5 12h14" />
@@ -175,7 +176,7 @@ export default function BenefitsPage() {
             </div>
           </div>
           <div className="mt-9 text-center">
-            <Link to="/try-now" className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+            <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'benefits_section')} className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
               TRY NOW
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
                 <path d="M5 12h14" />
@@ -551,7 +552,7 @@ export default function BenefitsPage() {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
             Discover how Homezai can support agents, brokerages, MLSs, and associations with an intelligent showing experience.
           </p>
-          <Link to="/try-now" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+          <Link to="/try-now" onClick={() => trackCtaClick('try_now_click', 'cta_section')} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
             TRY NOW — START WITH YOUR FIRST LISTING
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right h-5 w-5" aria-hidden="true">
               <path d="M5 12h14" />
