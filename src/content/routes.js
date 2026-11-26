@@ -17,7 +17,6 @@ export const STATIC_ROUTES = Object.freeze([
   '/about/',
   '/benefits/',
   '/news/',
-  '/blog/',
   '/pricing/',
   '/try-now/',
   '/partners/mls/',
@@ -39,13 +38,14 @@ export const STATIC_ROUTES = Object.freeze([
  * legal pages moved to /terms/ and /privacy/. Both answered 404 on 2026-11-24.
  */
 export const PERMANENT_REDIRECTS = Object.freeze([
+  { from: '/blog/', to: '/news/' },
   { from: '/support/', to: '/' },
   { from: '/terms-conditions/', to: '/terms/' },
   { from: '/privacy-policy/', to: '/privacy/' },
 ])
 
 /** Routes that exist but should never be advertised in the sitemap. */
-export const UNLISTED_ROUTES = Object.freeze(['/support/', '/terms-conditions/', '/privacy-policy/'])
+export const UNLISTED_ROUTES = Object.freeze(['/blog/', '/support/', '/terms-conditions/', '/privacy-policy/'])
 
 /** The file a canonical path is written to, relative to the build output directory. */
 export function outputFileForPath(path) {

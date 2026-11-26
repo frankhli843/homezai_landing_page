@@ -36,7 +36,7 @@ export function buildSitemap({ posts = [] } = {}) {
     urls.push({
       loc: absoluteUrl(route),
       priority: route === '/' ? '1.0' : '0.7',
-      changefreq: route === '/blog/' ? 'weekly' : 'monthly',
+      changefreq: route === '/news/' ? 'weekly' : 'monthly',
     })
   }
 

@@ -32,7 +32,7 @@ test('the top level menus are the three the design shows, in order', () => {
 
 test('each menu carries the design items, in order', () => {
   const items = Object.fromEntries(NAV_GROUPS.map((group) => [group.label, group.items.map((item) => `${item.label} ${item.to}`)]))
-  assert.deepEqual(items['About Us'], ['Mission /about#our-mission', 'Stories /blog', 'News /news', 'Contact /contact'])
+  assert.deepEqual(items['About Us'], ['Mission /about#our-mission', 'Stories /news', 'News /news', 'Contact /contact'])
   assert.deepEqual(items.Pricing, [
     'Pricing Tiers /pricing#pricing-tiers',
     'Onboarding /pricing#onboarding',
@@ -68,7 +68,7 @@ test('the built home page carries the new header and footer navigation', { skip:
   const footer = html.match(/<footer[\s\S]*?<\/footer>/)
   assert.ok(nav && footer, 'the built page must contain the shared header and footer')
   for (const label of ['About Us', 'Pricing', 'Partners', 'LOG IN', 'TRY NOW']) assert.match(nav[0], new RegExp(`>${label}<`))
-  assert.match(nav[0], /href="\/blog"[^>]*>Stories<\/a>/)
-  assert.match(footer[0], /href="\/blog"[^>]*>Stories<\/a>/)
+  assert.match(nav[0], /href="\/news"[^>]*>Stories<\/a>/)
+  assert.match(footer[0], /href="\/news"[^>]*>Stories<\/a>/)
   assert.match(footer[0], /href="\/privacy"[^>]*>Privacy Policy<\/a>/)
 })
