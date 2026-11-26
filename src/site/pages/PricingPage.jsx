@@ -689,29 +689,14 @@ export default function PricingPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900">How to Cancel</h3>
-                    <p className="mt-2">Subscribers may request cancellation through either of the following methods:</p>
-                    <ol className="mt-3 list-decimal space-y-2 pl-5">
-                      <li>
-                        <strong className="font-semibold text-slate-900">Submit a Support Request:</strong>
-                        {" "}
-                        Submit a cancellation request through the
-                        {" "}
-                        <Link to="/support" className="font-semibold text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-800">
-                          Homezai support system
-                        </Link>
-                        .
-                      </li>
-                      <li>
-                        <strong className="font-semibold text-slate-900">Email Customer Support:</strong>
-                        {" "}
-                        Send a cancellation request to
-                        {" "}
-                        <a href="mailto:support@homezai.com" className="font-semibold text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-800">
-                          support@homezai.com
-                        </a>
-                        .
-                      </li>
-                    </ol>
+                    <p className="mt-2">
+                      Subscribers may request cancellation by emailing customer support at
+                      {" "}
+                      <a href="mailto:support@homezai.com" className="font-semibold text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-800">
+                        support@homezai.com
+                      </a>
+                      .
+                    </p>
                     <p className="mt-3">
                       Cancellation requests will be processed in accordance with the applicable subscription terms. Homezai will provide confirmation of the cancellation and its effective date.
                     </p>
